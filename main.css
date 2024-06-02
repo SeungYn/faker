@@ -24,16 +24,22 @@ html {
   font-style: italic;
   font-size: 5rem;
   margin-bottom: 6rem;
-  animation: faker_quotation 1s;
+  animation: faker_quotation 2s;
 }
 
-.intro_section img {
+.intro_section > img {
   width: 400px;
   aspect-ratio: 1/2;
 }
 
+#fade-in-faker-canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 @media screen and (min-width: 1024px) {
-  .intro_section img {
+  .intro_section > img {
     width: 600px;
     aspect-ratio: 1/2;
   }
