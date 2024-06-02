@@ -12,14 +12,14 @@ html {
 .intro_section {
   position: relative;
   height: 100vh;
-  background: linear-gradient(to top, #000000, #591515);
+  background: linear-gradient(to right, #000000 30%, #591515);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: end;
 }
 
-.intro_section h2 {
+.intro_section > h2 {
   color: white;
   font-style: italic;
   font-size: 5rem;
@@ -38,16 +38,50 @@ html {
   height: 100%;
 }
 
+.intro_section-after {
+  z-index: 10;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.intro_section-after h2 {
+  position: relative;
+  color: #e4e6cf;
+  bottom: -70%;
+  font-size: 3rem;
+  white-space: nowrap;
+  margin: 0 auto;
+  text-align: center;
+  opacity: 0;
+}
+
 @media screen and (min-width: 1024px) {
   .intro_section > img {
     width: 600px;
     aspect-ratio: 1/2;
+  }
+
+  .intro_section-after h2 {
+    font-size: 6rem;
   }
 }
 
 @keyframes faker_quotation {
   from {
     transform: translate3d(0, -40%, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes faker_quotation-after {
+  from {
+    transform: translate3d(0, 40%, 0);
     opacity: 0;
   }
   to {

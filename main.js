@@ -32,6 +32,8 @@ const sceneInfo = [
     scrollHeight: 0,
     objs: {
       container: document.querySelector('#intro_section'),
+      afterContainer: document.querySelector('.intro_section-after'),
+      afterQuotation: document.querySelector('.intro_section-after h2'),
       canvas: document.querySelector('#fade-in-faker-canvas'),
       context: document.querySelector('#fade-in-faker-canvas').getContext('2d'),
       introImages: [],
@@ -93,6 +95,7 @@ function fadeInFakerImage() {
   fadeInRequestAnimaionPutImageWave();
 
   function fadeInRequestAnimaionPutImageWave() {
+    console.log(x, y);
     //if (y >= objs.canvas.height || x >= objs.canvas.width) return;
 
     objs.context.putImageData(imageData, 0, 0, x, y, fillRange, fillRange);
@@ -110,6 +113,16 @@ function fadeInFakerImage() {
       window.requestAnimationFrame(() => {
         fadeInRequestAnimaionPutImageWave();
       });
+    }
+
+    // 이미지가 완전히 덮여졌을 때
+
+    if (y > objs.canvas.height && x > objs.canvas.width) {
+      console.log(objs.afterContainer);
+      console.log(objs.afterQuotation);
+      console.log('끝');
+      objs.afterContainer.style.display = 'block';
+      objs.afterQuotation.style.animation = 'faker_quotation-after 2s forwards';
     }
   }
 
