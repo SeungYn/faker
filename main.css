@@ -57,6 +57,16 @@ html {
   opacity: 0;
 }
 
+.intro_section-after_icon {
+  position: absolute;
+  bottom: 10%;
+  font-size: 2.6rem;
+  color: white;
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+  animation: scrolldown-anima infinite alternate 1s;
+}
+
 @media screen and (min-width: 1024px) {
   .intro_section > img {
     width: 600px;
@@ -87,5 +97,14 @@ html {
   to {
     transform: translate3d(0, 0, 0);
     opacity: 1;
+  }
+}
+
+@keyframes scrolldown-anima {
+  from {
+    transform: translate3d(-50%, -20%, 0);
+  }
+  to {
+    transform: translate3d(-50%, 20%, 0);
   }
 }
