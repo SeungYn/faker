@@ -25,7 +25,7 @@ const sceneInfo = [
   {
     //1
     type: 'sticky', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
-    heightNum: 5, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
+    heightNum: 6, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
     scrollHeight: 0,
     objs: {
       container: document.querySelector('#second_section'),
