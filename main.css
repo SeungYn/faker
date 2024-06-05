@@ -103,8 +103,8 @@ html {
 }
 
 #third_section {
-  height: 100vh;
   width: 100%;
+  height: 500vh;
   background-color: red;
 }
 

@@ -50,6 +50,7 @@ const sceneInfo = [
       videoImageCount: 276,
       wakeUpImageSequence: [0, 275, { start: 0, end: 0.5 }],
       wakeUpCanvas_opacity: [1, 0, { start: 0.46, end: 0.52 }],
+      canvas2_opacity_out: [1, 0, { start: 0.9, end: 0.95 }],
       liftImageCount: 722,
       liftImageSequence: [0, 721, { start: 0.5, end: 0.9 }],
       liftCanvas_opacity_in: [0, 1, { start: 0.5, end: 0.55 }],
@@ -94,7 +95,7 @@ const sceneInfo = [
   },
   {
     //2
-    type: 'sticky', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
+    type: 'normal', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
     heightNum: 5, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
     scrollHeight: 0,
     objs: { container: document.querySelector('#third_section') },
@@ -130,7 +131,7 @@ function setCanvasImages() {
 
 function setLayout() {
   // 각 스크롤 섹션의 높이 세팅
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < sceneInfo.length; i++) {
     if (sceneInfo[i].type === 'sticky') {
       // 스크롤 애니메이션이 필요한 씬의 크기를 늘려줌
       sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
@@ -531,6 +532,13 @@ function playAnimation() {
         );
         objs.messageI.style.opacity = messageI_opacity_out;
         objs.messageI.style.transform = `translateY(${messageI_translate_out}%)`;
+      }
+
+      if (scrollRatio >= 0.9) {
+        objs.canvas2.style.opacity = calcValues(
+          values.canvas2_opacity_out,
+          currentYOffset
+        );
       }
 
       break;
