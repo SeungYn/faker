@@ -548,11 +548,12 @@ function playAnimation() {
           currentYOffset
         );
       }
+      // 3번째 배경을 미리 불러오는데 오차때문에 생긴 버그 수정해주는 코드
+      if (scrollRatio < 0.95) {
+        // 3번째 배경을 미리 불러오는데 오차때문에 생긴 버그 수정해주는 코드
+        sceneInfo[2].objs.background.style.opacity = 0;
+      }
       if (scrollRatio >= 0.95) {
-        console.log(
-          calcValues(sceneInfo[2].values.background_opacity_in, currentYOffset),
-          currentYOffset
-        );
         const background_opacity_in = calcValues(
           sceneInfo[2].values.background_opacity_in,
           currentYOffset
@@ -563,14 +564,9 @@ function playAnimation() {
       break;
 
     case 2:
-      // console.log('2 play');
-      // if (scrollRatio <= 0.1) {
-      //   const background_opacity_in = calcValues(
-      //     sceneInfo[2].values.background_opacity_in,
-      //     currentYOffset
-      //   );
-      //   sceneInfo[2].objs.background.style.opacity = background_opacity_in;
-      // }
+      // 2번 케이스에 오면 무조건 배경은 1
+      sceneInfo[2].objs.background.style.opacity = 1;
+
       break;
 
     case 3:
