@@ -222,6 +222,7 @@ html {
   align-items: center;
 }
 
+/* 타임라인 현재 높이 */
 .award_wrap_list_award_card p::after {
   content: '';
   position: absolute;
@@ -362,6 +363,30 @@ body#show-scene-1 #second_section .sticky-elem {
   }
 
   /* 수상 경력 */
+
+  .award_wrap_list {
+    grid-template-columns: 1fr var(--line-w) 1fr;
+  }
+  .award_wrap_list::before {
+    grid-column: 2;
+  }
+  .award_wrap_list::after {
+    grid-column: 2;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate3d(-50%, 0, 0);
+  }
+  .award_wrap_list li:nth-child(odd) {
+    grid-column: 1;
+  }
+  .award_wrap_list li:nth-child(even) {
+    grid-column: 3;
+  }
+
+  .award_wrap_list_award_card p {
+    height: 8rem;
+  }
 
   .award_wrap_list_award_card_iframe {
     max-width: 1200px;
