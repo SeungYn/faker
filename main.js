@@ -104,7 +104,7 @@ const sceneInfo = [
       background: document.querySelector('#third_background'),
     },
     values: {
-      background_opacity_in: [0, 1, { start: 0.95, end: 1 }],
+      background_opacity_in: [0, 1, { start: 0.96, end: 0.99 }],
       background_opacity_out: [1, 0, { start: 0.95, end: 1 }],
     },
   },
@@ -549,6 +549,10 @@ function playAnimation() {
         );
       }
       if (scrollRatio >= 0.95) {
+        console.log(
+          calcValues(sceneInfo[2].values.background_opacity_in, currentYOffset),
+          currentYOffset
+        );
         const background_opacity_in = calcValues(
           sceneInfo[2].values.background_opacity_in,
           currentYOffset
