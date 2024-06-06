@@ -51,8 +51,9 @@ const sceneInfo = [
       wakeUpImageSequence: [0, 275, { start: 0, end: 0.5 }],
       wakeUpCanvas_opacity: [1, 0, { start: 0.46, end: 0.52 }],
       canvas2_opacity_out: [1, 0, { start: 0.9, end: 0.95 }],
+      // 우승컵 들어올리는 프레임이 많아서 반으로 줄임
       liftImageCount: 722,
-      liftImageSequence: [0, 721, { start: 0.5, end: 0.9 }],
+      liftImageSequence: [0, Math.floor(722 / 2) - 1, { start: 0.5, end: 0.9 }],
       liftCanvas_opacity_in: [0, 1, { start: 0.5, end: 0.55 }],
       // liftCanvas_opacity_out: [1, 0, { start: 0.46, end: 0.52 }],
       messageA_opacity_in: [0, 1, { start: 0, end: 0.1 }],
@@ -127,6 +128,7 @@ function setCanvasImages() {
   }
 
   for (let i = 1; i <= sceneInfo[1].values.liftImageCount; i++) {
+    if (i % 2 !== 0) continue;
     const imgElem = document.createElement('img');
     imgElem.src = `./videos/faker-cup/${i}.jpg`;
     sceneInfo[1].objs.liftImages.push(imgElem);
@@ -148,7 +150,7 @@ function setLayout() {
 
     sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`; //
   }
-  console.log(sceneInfo);
+  //console.log(sceneInfo);
   //새로고침시 현재 스크롤 위치에 맞춰서 현재 씬을 반영함
   //씬을 돌면서 height를 더하다가 현재 스크롤 지점이랑 같거나 커지는 지점에서 해당 씬을 넣음
   yOffset = window.scrollY;
@@ -298,7 +300,7 @@ function playAnimation() {
   const currentYOffset = yOffset - prevScrollHeight;
   const scrollHeight = sceneInfo[currentScene].scrollHeight; // 현재 씬의 높이
   const scrollRatio = currentYOffset / scrollHeight; // currentYOffset / 현재 씬의 높이
-  console.log(currentScene);
+  //console.log(currentScene);
   // 현재 씬만 애니메이션 되도록 해주는 함수
   switch (currentScene) {
     case 1:
@@ -320,7 +322,7 @@ function playAnimation() {
       const sequence2 = Math.round(
         calcValues(values.liftImageSequence, currentYOffset)
       );
-      console.log('sequence2', sequence2);
+      //console.log('sequence2', sequence2);
       objs.context2.drawImage(objs.liftImages[sequence2], 0, 0);
       objs.canvas2.style.opacity = calcValues(
         values.liftCanvas_opacity_in,
@@ -409,7 +411,7 @@ function playAnimation() {
           values.messageD_translateY_in,
           currentYOffset
         );
-        console.log('d ', messageD_opacity_in);
+        //console.log('d ', messageD_opacity_in);
         objs.messageD.style.opacity = messageD_opacity_in;
         objs.messageD.style.transform = `translateY(${messageD_translate_in}%)`;
       } else {
@@ -582,7 +584,7 @@ function awardEventEnroll() {
     '.award_wrap_list_award_card'
   );
 
-  console.log(document.querySelector('.award_wrap_list::after'));
+  //console.log(document.querySelector('.award_wrap_list::after'));
 
   award_iframe_elems.forEach((item, i) => {
     // 부모 요소로 부터 거리
@@ -596,7 +598,7 @@ function awardEventEnroll() {
         item.offsetParent.getBoundingClientRect().height
       );
       // timeline 높이 지정
-      console.log(timeLineHeight);
+      //console.log(timeLineHeight);
       document.body.style.setProperty(
         '--timeline-height',
         `${timeLineHeight}px`
@@ -658,5 +660,4 @@ window.addEventListener('load', () => {
   // loadImages();
 });
 
-console.log('scoroll', window.screenY);
 //fadeInFakerImage();
