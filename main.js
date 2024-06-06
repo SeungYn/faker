@@ -98,8 +98,14 @@ const sceneInfo = [
     type: 'normal', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
     heightNum: 5, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
     scrollHeight: 0,
-    objs: { container: document.querySelector('#third_section') },
-    values: {},
+    objs: {
+      container: document.querySelector('#third_section'),
+      background: document.querySelector('#third_background'),
+    },
+    values: {
+      background_opacity_in: [0, 1, { start: 0.95, end: 1 }],
+      background_opacity_out: [1, 0, { start: 0.95, end: 1 }],
+    },
   },
   // {
   //   //3
@@ -540,12 +546,25 @@ function playAnimation() {
           currentYOffset
         );
       }
+      if (scrollRatio >= 0.95) {
+        const background_opacity_in = calcValues(
+          sceneInfo[2].values.background_opacity_in,
+          currentYOffset
+        );
+        sceneInfo[2].objs.background.style.opacity = background_opacity_in;
+      }
 
       break;
 
     case 2:
       // console.log('2 play');
-
+      // if (scrollRatio <= 0.1) {
+      //   const background_opacity_in = calcValues(
+      //     sceneInfo[2].values.background_opacity_in,
+      //     currentYOffset
+      //   );
+      //   sceneInfo[2].objs.background.style.opacity = background_opacity_in;
+      // }
       break;
 
     case 3:
@@ -555,6 +574,48 @@ function playAnimation() {
   }
 }
 
+// 수상경력 iframe toggle 이벤트
+function awardEventEnroll() {
+  let currentIndex = -1;
+
+  const award_iframe_elems = document.querySelectorAll(
+    '.award_wrap_list_award_card'
+  );
+
+  console.log(document.querySelector('.award_wrap_list::after'));
+
+  award_iframe_elems.forEach((item, i) => {
+    // 부모 요소로 부터 거리
+    //console.log('offsetParent', item.offsetTop);
+    item.addEventListener('click', () => {
+      currentIndex = i;
+
+      const timeLineHeight = Math.min(
+        item.querySelector('p').getBoundingClientRect().height / 2 +
+          item.offsetTop,
+        item.offsetParent.getBoundingClientRect().height
+      );
+      // timeline 높이 지정
+      console.log(timeLineHeight);
+      document.body.style.setProperty(
+        '--timeline-height',
+        `${timeLineHeight}px`
+      );
+      award_iframe_elems.forEach((el, index) => {
+        if (index < currentIndex) {
+          el.classList.add('passed');
+        } else if (index === currentIndex) {
+          el.classList.toggle('active');
+          el.classList.remove('passed');
+        } else {
+          // el.classList.remove('passed');
+          // el.classList.remove('active');
+        }
+      });
+    });
+  });
+}
+
 function scrollLoop() {
   enterNewScene = false;
   prevScrollHeight = 0; //currentScene 으로 현재 내가 보고있는 씬에서 이전의 씬들의 값을 구해줌 2번쨰 씬을 보고있으면 1번째 씬의 높이 값이 할당됨
@@ -562,7 +623,7 @@ function scrollLoop() {
     prevScrollHeight += sceneInfo[i].scrollHeight;
     //console.log(prevScrollHeight);
   }
-  console.log(sceneInfo[currentScene], currentScene);
+  //console.log(sceneInfo[currentScene], currentScene);
   // 애니메이션 감속 처리때문에 기존의 yOffset으로 판별하면 어색해질 수 있음
   // 그걸 방지하기 위해 yOffset > delayedYOffset으로 변경 기존 다른 애니메이션은 상돤이 없음
   if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
@@ -584,6 +645,7 @@ function scrollLoop() {
 
 loadImages();
 setCanvasImages();
+awardEventEnroll();
 
 window.addEventListener('scroll', (e) => {
   yOffset = window.scrollY;
@@ -592,6 +654,7 @@ window.addEventListener('scroll', (e) => {
 
 window.addEventListener('load', () => {
   setLayout();
+  //awardEventEnroll();
   // loadImages();
 });
 

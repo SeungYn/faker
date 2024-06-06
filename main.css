@@ -1,3 +1,7 @@
+:root {
+  --font-color: rgb(236 230 221);
+}
+
 html {
   font-size: 50%;
 
@@ -10,6 +14,10 @@ html {
 }
 
 /* common */
+
+.common_container {
+  padding: 0 1rem;
+}
 
 .sticky-elem {
   position: fixed;
@@ -101,26 +109,199 @@ html {
   transform: translate3d(-50%, 0, 0);
   animation: scrolldown-anima infinite alternate 1s;
 }
-
+/* 세번째 섹션 */
 #third_section {
+  color: white;
+  position: relative;
+  padding-top: 30vh;
+  padding-bottom: 30vh;
   width: 100%;
-  height: 500vh;
-  background-color: red;
+}
+/* 금색 배경 그림자 부분 */
+/* linear-gradient(180deg,#0f0e09 66%,#494034 86%,#aa9678 107%,#d8ccb9 117%,#f0ebe3 134%) */
+
+.third_section_title {
+  position: relative;
+  margin-bottom: 10rem;
+  color: white;
+  font-size: 5rem;
+  font-style: italic;
+  text-decoration: underline;
+  text-align: center;
+}
+
+.award_wrap {
+  position: relative;
+  z-index: 10;
+}
+
+.award_wrap_list {
+  padding: 0;
+  margin: 0;
+  --col-gap: 4rem;
+  --row-gap: 2rem;
+  --line-w: 0.25rem;
+  display: grid;
+  grid-template-columns: var(--line-w) 1fr;
+  grid-auto-columns: max-content;
+  column-gap: var(--col-gap);
+  list-style: none;
+  width: 100%;
+}
+
+/* line */
+.award_wrap_list::before {
+  content: '';
+  grid-column: 1;
+  width: 4px;
+  grid-row: 1 / span 100;
+  background: white;
+  border-radius: calc(var(--line-w) / 2);
+}
+
+/* 현재 클릭된 높이 타임라인 */
+.award_wrap_list::after {
+  content: '';
+  position: absolute;
+  grid-column: 1;
+  width: 4px;
+  /* style.setProperty 동적으로 적용해서 값을 가져올 수 있음 */
+  height: var(--timeline-height, 0);
+  background: #d8ccb9;
+  border-radius: calc(var(--line-w) / 2);
+  transition: 0.3s;
+}
+
+/* card */
+.award_wrap_list li {
+  grid-column: 2;
+  padding-bottom: 10rem;
+
+  /* grid-row: span 2; */
+}
+
+.award_wrap_list li h3 {
+  position: relative;
+  font-size: 4rem;
+  color: white;
+  height: 5rem;
+  text-align: left;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+/* circle */
+.award_wrap_list li h3::after {
+  content: '';
+  position: absolute;
+  width: 1.2rem;
+  aspect-ratio: 2 / 1;
+  background: white;
+  border: 0.2rem solid #d8ccb9;
+
+  top: 50%;
+  z-index: 100;
+  transform: translate(50%, -50%);
+  /* gap + 라인 컬럼 크기의 반 */
+  right: calc(100% + var(--col-gap) + var(--line-w) / 2);
+}
+
+.award_wrap_list_award_card {
+  user-select: none;
+  cursor: pointer;
+}
+
+.award_wrap_list_award_card p {
+  font-size: 2rem;
+  font-weight: bold;
+  position: relative;
+  padding: 1rem 0;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+}
+
+.award_wrap_list_award_card p::after {
+  content: '';
+  position: absolute;
+  width: 1rem;
+  aspect-ratio: 1 / 1;
+  background: white;
+  border: 0.2rem solid transparent;
+  border-radius: 50%;
+  top: 50%;
+  z-index: 100;
+  transform: translate(50%, -50%);
+  /* gap + 라인 컬럼 크기의 반 */
+  right: calc(100% + var(--col-gap) + var(--line-w) / 2);
+  transition: 0.3s;
+}
+
+.award_wrap_list_award_card.active p::after {
+  border: 0.2rem solid #d8ccb9;
+}
+
+.award_wrap_list_award_card.passed p::after {
+  background: #d8ccb9;
+}
+
+.award_wrap_list_award_card_iframe {
+  position: relative;
+  width: 400px;
+  height: 0px;
+  border-radius: 2rem;
+  overflow: hidden;
+  transition: 1s;
+}
+
+.award_wrap_list_award_card_iframe iframe {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.award_wrap_list_award_card i {
+  margin-left: 1rem;
+  transition: 0.3s;
+}
+
+.award_wrap_list_award_card.active i {
+  transform: rotate(180deg);
+}
+.award_wrap_list_award_card.active .award_wrap_list_award_card_iframe {
+  height: 400px;
+}
+
+.third_background {
+  opacity: 0;
+  position: fixed;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    #0f0e09 5.78%,
+    #494034 28.26%,
+    #aa9678 50.61%,
+    #d8ccb9 74.04%,
+    #f0ebe3
+  );
+}
+
+.third_background_img {
+  background-image: url('./imgs/master_background.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 body#show-scene-1 #second_section .sticky-elem {
   display: block;
-}
-
-@media screen and (min-width: 1024px) {
-  .intro_section > img {
-    width: 600px;
-    aspect-ratio: 1/2;
-  }
-
-  .intro_section-after h2 {
-    font-size: 6rem;
-  }
 }
 
 @keyframes faker_quotation {
@@ -154,4 +335,28 @@ body#show-scene-1 #second_section .sticky-elem {
   }
 }
 
-/* second section*/
+@media screen and (min-width: 1024px) {
+  .common_container {
+    padding: 0 2rem;
+  }
+
+  .intro_section > img {
+    width: 600px;
+    aspect-ratio: 1/2;
+  }
+
+  .intro_section-after h2 {
+    font-size: 6rem;
+  }
+
+  /* 수상 경력 */
+
+  .award_wrap_list_award_card_iframe {
+    max-width: 1200px;
+    width: 100%;
+  }
+
+  .award_wrap_list_award_card.active .award_wrap_list_award_card_iframe {
+    height: 800px;
+  }
+}
