@@ -105,21 +105,34 @@ const sceneInfo = [
     },
     values: {
       background_opacity_in: [0, 1, { start: 0.96, end: 0.99 }],
-      background_opacity_out: [1, 0, { start: 0.95, end: 1 }],
+      background_opacity_out: [1, 0, { start: 0.93, end: 0.97 }],
     },
   },
-  // {
-  //   //3
-  //   type: 'sticky', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
-  //   heightNum: 5, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
-  //   scrollHeight: 0,
-  //   objs: {},
-  //   values: {
-  //     // 브랜딩 세션의 흰 박스 스크롤 할 대 계산할 예정
-  //   },
-  // },
+  {
+    //3
+    type: 'sticky', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
+    heightNum: 5, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
+    scrollHeight: 0,
+    objs: {
+      container: document.querySelector('#fourth_section'),
+      canvas1: document.querySelector('.image-blend-canvas'),
+      context1: document.querySelector('.image-blend-canvas').getContext('2d'),
+      assetPath: [
+        './imgs/faker_ahri.jpg',
+        './imgs/LeBlanc.jpg',
+        './imgs/final_ahri.mp4',
+      ],
+      assets: [],
+    },
+    values: {
+      // 브랜딩 세션의 흰 박스 스크롤 할 대 계산할 예정
+    },
+  },
 ];
 
+/**
+ * 캔버스 이미지, 영상 로드
+ */
 function setCanvasImages() {
   for (let i = 1; i <= sceneInfo[1].values.videoImageCount; i++) {
     const imgElem = document.createElement('img');
@@ -133,6 +146,22 @@ function setCanvasImages() {
     imgElem.src = `./videos/faker-cup/${i}.jpg`;
     sceneInfo[1].objs.liftImages.push(imgElem);
   }
+
+  for (let i = 0; i < sceneInfo[3].objs.assetPath.length; i++) {
+    let imgElem;
+    if (
+      ['jpg', 'png'].includes(
+        sceneInfo[3].objs.assetPath[i].split('.')[2].toLowerCase()
+      )
+    ) {
+      imgElem = document.createElement('img');
+    } else {
+      imgElem = document.createElement('video');
+    }
+    imgElem.src = sceneInfo[3].objs.assetPath[i];
+    sceneInfo[3].objs.assets.push(imgElem);
+  }
+  console.log(sceneInfo[3].objs.assets);
 
   //console.log(sceneInfo[1].objs.wakeUpImages);
 }
@@ -565,13 +594,31 @@ function playAnimation() {
 
     case 2:
       // 2번 케이스에 오면 무조건 배경은 1
-      sceneInfo[2].objs.background.style.opacity = 1;
+      if (scrollRatio < 0.92) sceneInfo[2].objs.background.style.opacity = 1;
+      else
+        objs.background.style.opacity = calcValues(
+          values.background_opacity_out,
+          currentYOffset
+        );
 
       break;
 
     case 3:
       // console.log('3 play');
+      const widthRatio = window.innerWidth / objs.canvas1.width;
+      const heightRatio = window.innerHeight / objs.canvas1.height;
 
+      let canvasScalRatio;
+
+      // 어느 비율에서든 꽉 차게 비율을 구함.
+      if (widthRatio <= heightRatio) {
+        // 캔버스보다 브라우저 창이 홀쭉한 경우
+        canvasScalRatio = heightRatio;
+      } else {
+        // 캔버스보다 브라우저 창이 납작한 경우
+        canvasScalRatio = widthRatio;
+      }
+      objs.canvas.style.transform = `scale(${canvasScalRatio})`;
       break;
   }
 }

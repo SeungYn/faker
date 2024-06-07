@@ -312,6 +312,26 @@ html {
   height: 100%;
 }
 
+/* 네번째 씬 */
+#fourth_section {
+  height: 500vh;
+}
+
+.image-blend-canvas {
+  border: 3px solid red;
+}
+
+.image-blend-canvas.sticky-elem {
+  /* border: 3px solid red; */
+  /* background-color: blue; */
+  top: 0;
+}
+
+.image-blend-canvas.sticky {
+  position: fixed;
+  top: 0;
+}
+
 body#show-scene-1 #second_section .sticky-elem {
   display: block;
 }
