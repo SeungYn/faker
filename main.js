@@ -2,7 +2,8 @@ let yOffset = 0; // window.pageYOffset 대신 쓸 변수
 let prevScrollHeight = 0; //현재 스크롤 위치 보다 이전에 위치한 스크롤 섹션들의 스크롤 높이값의 합
 let currentScene = 0; //현재 활성화된 씬
 let enterNewScene = false; // 새로운 씬이 시작된 순간
-
+let ahriVideoPlayStatus = false;
+let ahriVideoReadyStatus = false;
 //4개의 스크롤 구간에 대한 객체배열
 const sceneInfo = [
   {
@@ -115,16 +116,28 @@ const sceneInfo = [
     scrollHeight: 0,
     objs: {
       container: document.querySelector('#fourth_section'),
+      canvasContainer: document.querySelector('#canvas_container'),
       canvas1: document.querySelector('.image-blend-canvas'),
+      overlayCanvas: document.querySelector('#image-blend-canvas-overlay'),
       context1: document.querySelector('.image-blend-canvas').getContext('2d'),
+      overlayContext: document
+        .querySelector('#image-blend-canvas-overlay')
+        .getContext('2d'),
       assetPath: [
         './imgs/faker_ahri.jpg',
-        './imgs/LeBlanc.jpg',
+        './imgs/faker_LeBlanc.jpg',
         './imgs/final_ahri.mp4',
       ],
       assets: [],
     },
     values: {
+      rect1X: [0, 0, { start: 0, end: 0 }],
+      rect2X: [0, 0, { start: 0, end: 0 }],
+      blendHeight: [0, 0, { start: 0, end: 0 }],
+      canvas_scale: [0, 0, { start: 0, end: 0 }],
+      canvasCaption_opacity: [0, 1, { start: 0, end: 0 }],
+      canvasCaption_translateY: [20, 0, { start: 0, end: 0 }],
+      rectStartY: 0,
       // 브랜딩 세션의 흰 박스 스크롤 할 대 계산할 예정
     },
   },
@@ -157,6 +170,17 @@ function setCanvasImages() {
       imgElem = document.createElement('img');
     } else {
       imgElem = document.createElement('video');
+      // 비디오의 모든 정보 이벤트 크기, 시속시간 등
+      imgElem.onloadedmetadata = () => {
+        ahriVideoReadyStatus = true;
+      };
+      imgElem.loop = true;
+      // 자동재생 조건 만족시키기
+      imgElem.muted = true;
+      console.log({ imgElem });
+      Object.keys(imgElem).forEach((property) => {
+        console.log(property + ':', imgElem[property]);
+      });
     }
     imgElem.src = sceneInfo[3].objs.assetPath[i];
     sceneInfo[3].objs.assets.push(imgElem);
@@ -320,6 +344,7 @@ function calcValues(values, currentYOffset) {
     rv = scrollRatio * (values[1] - values[0]) + values[0];
   }
   //console.log('rv', rv);
+
   return rv;
 }
 
@@ -329,6 +354,7 @@ function playAnimation() {
   const currentYOffset = yOffset - prevScrollHeight;
   const scrollHeight = sceneInfo[currentScene].scrollHeight; // 현재 씬의 높이
   const scrollRatio = currentYOffset / scrollHeight; // currentYOffset / 현재 씬의 높이
+  let ahriSceneScrollYOffset;
   //console.log(currentScene);
   // 현재 씬만 애니메이션 되도록 해주는 함수
   switch (currentScene) {
@@ -607,7 +633,6 @@ function playAnimation() {
       // console.log('3 play');
       const widthRatio = window.innerWidth / objs.canvas1.width;
       const heightRatio = window.innerHeight / objs.canvas1.height;
-
       let canvasScalRatio;
 
       // 어느 비율에서든 꽉 차게 비율을 구함.
@@ -618,10 +643,164 @@ function playAnimation() {
         // 캔버스보다 브라우저 창이 납작한 경우
         canvasScalRatio = widthRatio;
       }
-      objs.canvas.style.transform = `scale(${canvasScalRatio})`;
+      // 캔버스는 픽셀단위라서 px를 명시해줄 필요가 없음
+      objs.canvas1.width = `${document.body.offsetWidth}`;
+      objs.canvas1.height = `${window.innerHeight}`;
+      objs.overlayCanvas.width = `${document.body.offsetWidth}`;
+      objs.overlayCanvas.height = `${window.innerHeight}`;
+      // objs.canvas1.style.transform = `scale(${canvasScalRatio})`;
+
+      if (!values.rectStartY) {
+        // 스크롤 이벤트가 발생한나 순간 값을 가져옴, 속도에 따라 값이 변함 (아래 코드는)
+        //values.rectStartY = objs.canvas.getBoundingClientRect().top;
+        // 위의 문제를 해결하기 위해 offSetTop를 사용
+        // 왼쪽 값에 빨간거 높이에서 연두색 높이를 빼고 나누기 2를 해주면됨
+
+        values.rectStartY = objs.canvasContainer.offsetTop;
+
+        values.rect1X[2].start = window.innerHeight / 2 / scrollHeight;
+        values.rect2X[2].start = window.innerHeight / 2 / scrollHeight;
+        // 해당 캔버스가 맨위로 가는 시점을 비율료 나타낸것
+        values.rect1X[2].end = values.rectStartY / scrollHeight;
+        values.rect2X[2].end = values.rectStartY / scrollHeight;
+        console.log('top', objs.canvasContainer.offsetTop, values);
+        // 테두리 크기 지정
+        objs.overlayContext.lineWidth = 20;
+      }
+
+      // 처음 진입시 비디오 재생
+      if (!ahriVideoPlayStatus && ahriVideoReadyStatus) {
+        console.log('비디오 재생 시작');
+        objs.assets[2].play();
+        ahriVideoPlayStatus = true;
+        canvasVideoAutoPlay(
+          objs.context1,
+          objs.assets[2],
+          window.innerWidth,
+          window.innerHeight,
+          values,
+          currentYOffset
+        );
+      }
+
+      const whiteRectWidth = objs.canvas1.width * 0.5;
+      values.rect1X[0] = 0;
+      values.rect1X[1] = values.rect1X[0] - whiteRectWidth;
+      values.rect2X[0] = values.rect1X[0] + objs.canvas1.width - whiteRectWidth;
+      values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
+      // objs.context1.drawImage(objs.assets[1], 0, 0);
+      // objs.context1.fillRect(0, 0, 500, 500);
+
+      objs.overlayContext.clearRect(
+        0,
+        0,
+        objs.overlayCanvas.width,
+        objs.overlayCanvas.height
+      );
+
+      // 아리 양옆 이미지
+      objs.overlayContext.drawImage(
+        objs.assets[0],
+        parseInt(calcValues(values.rect1X, currentYOffset)),
+        0,
+        parseInt(whiteRectWidth),
+        window.innerHeight
+      );
+      objs.overlayContext.drawImage(
+        objs.assets[1],
+        parseInt(calcValues(values.rect2X, currentYOffset)),
+        0,
+        parseInt(whiteRectWidth),
+        window.innerHeight
+      );
+      // 이미지 테두리
+      objs.overlayContext.strokeRect(
+        parseInt(calcValues(values.rect1X, currentYOffset)),
+        0,
+        parseInt(whiteRectWidth),
+        window.innerHeight
+      );
+      objs.overlayContext.strokeRect(
+        parseInt(calcValues(values.rect2X, currentYOffset)),
+        0,
+        parseInt(whiteRectWidth),
+        window.innerHeight
+      );
+
+      // objs.overlayContext.fillRect(
+      //   parseInt(calcValues(values.rect1X, currentYOffset)),
+      //   0,
+      //   parseInt(whiteRectWidth),
+      //   window.innerHeight
+      // );
+      // objs.overlayContext.fillRect(
+      //   parseInt(calcValues(values.rect2X, currentYOffset)),
+      //   0,
+      //   parseInt(whiteRectWidth),
+      //   window.innerHeight
+      // );
+
       break;
   }
+
+  function canvasVideoAutoPlay(
+    context,
+    video,
+    width,
+    height,
+    values,
+    currentYOffset
+  ) {
+    if (!ahriVideoPlayStatus) return;
+
+    //context.drawImage(video, 0, 0, 100, 100);
+    context.drawImage(video, 0, 0, width, height);
+
+    //context.drawImage(video, 0, 0);
+    requestAnimationFrame(() => {
+      canvasVideoAutoPlay(
+        context,
+        video,
+        width,
+        height,
+        values,
+        currentYOffset
+      );
+    });
+  }
 }
+
+// 페이커 아리 애니메이션 부분
+// function canvasVideoAutoPlay(
+//   context,
+//   video,
+//   width,
+//   height,
+//   values,
+//   currentYOffset
+// ) {
+//   if (!ahriVideoPlayStatus) return;
+
+//   //context.drawImage(video, 0, 0, 100, 100);
+//   context.drawImage(video, 0, 0, width, height);
+//   context.fillRect(
+//     parseInt(calcValues(values.rect1X, currentYOffset)),
+//     0,
+//     parseInt(width * 0.15),
+//     height
+//   );
+//   context.fillRect(
+//     parseInt(calcValues(values.rect2X, currentYOffset)),
+//     0,
+//     parseInt(width * 0.15),
+//     height
+//   );
+
+//   //context.drawImage(video, 0, 0);
+//   requestAnimationFrame(() => {
+//     canvasVideoAutoPlay(context, video, width, height, values, currentYOffset);
+//   });
+// }
 
 // 수상경력 iframe toggle 이벤트
 function awardEventEnroll() {
