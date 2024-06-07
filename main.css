@@ -217,7 +217,7 @@ html {
   font-weight: bold;
   position: relative;
   padding: 1rem 0;
-  height: 4rem;
+  height: 6rem;
   display: flex;
   align-items: center;
 }
@@ -246,6 +246,10 @@ html {
 .award_wrap_list_award_card.passed p::after {
   background: #d8ccb9;
 }
+.award_wrap_list_award_card i {
+  margin-left: 1rem;
+  transition: 0.3s;
+}
 
 .award_wrap_list_award_card_iframe {
   position: relative;
@@ -271,11 +275,6 @@ html {
 .award_wrap_list_award_card_iframe a img {
   width: 100%;
   height: 100%;
-}
-
-.award_wrap_list_award_card i {
-  margin-left: 1rem;
-  transition: 0.3s;
 }
 
 .award_wrap_list_award_card.active i {
@@ -377,8 +376,51 @@ body#show-scene-1 #second_section .sticky-elem {
     left: 50%;
     transform: translate3d(-50%, 0, 0);
   }
+
+  .award_wrap_list li {
+    grid-row: span 3;
+  }
+
+  .award_wrap_list li:nth-child(odd) h3 {
+    position: relative;
+    font-size: 4rem;
+    color: white;
+    height: 5rem;
+    text-align: right;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+  }
+
+  .award_wrap_list li h3::after {
+    display: none;
+  }
+
   .award_wrap_list li:nth-child(odd) {
     grid-column: 1;
+  }
+
+  .award_wrap_list li:nth-child(2) {
+    grid-row: 3/6;
+  }
+
+  .award_wrap_list li:nth-child(odd) .award_wrap_list_award_card p {
+    flex-direction: row-reverse;
+  }
+
+  .award_wrap_list li:nth-child(odd) .award_wrap_list_award_card p::after {
+    content: '';
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: calc(100% + var(--col-gap) + var(--line-w) / 2);
+    /* gap + 라인 컬럼 크기의 반 */
+    right: 0;
+  }
+
+  .award_wrap_list li:nth-child(odd) .award_wrap_list_award_card p i {
+    margin-right: 1rem;
+    margin-left: 0;
   }
   .award_wrap_list li:nth-child(even) {
     grid-column: 3;
@@ -389,11 +431,12 @@ body#show-scene-1 #second_section .sticky-elem {
   }
 
   .award_wrap_list_award_card_iframe {
-    max-width: 1200px;
+    max-width: 1000px;
     width: 100%;
+    margin: 0 auto;
   }
 
   .award_wrap_list_award_card.active .award_wrap_list_award_card_iframe {
-    height: 800px;
+    height: 700px;
   }
 }
