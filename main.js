@@ -627,6 +627,72 @@ function playAnimation() {
           currentYOffset
         );
 
+      if (scrollRatio >= 0.95) {
+        // 4번째 씬 캔버스를 미리 그려줌
+        const objs = sceneInfo[3].objs;
+        const values = sceneInfo[3].values;
+
+        const widthRatio = window.innerWidth / objs.canvas1.width;
+        const heightRatio = window.innerHeight / objs.canvas1.height;
+        let canvasScalRatio;
+
+        // 어느 비율에서든 꽉 차게 비율을 구함.
+        if (widthRatio <= heightRatio) {
+          // 캔버스보다 브라우저 창이 홀쭉한 경우
+          canvasScalRatio = heightRatio;
+        } else {
+          // 캔버스보다 브라우저 창이 납작한 경우
+          canvasScalRatio = widthRatio;
+        }
+        // 캔버스는 픽셀단위라서 px를 명시해줄 필요가 없음
+        objs.canvas1.width = `${document.body.offsetWidth}`;
+        objs.canvas1.height = `${window.innerHeight}`;
+        objs.overlayCanvas.width = `${document.body.offsetWidth}`;
+        objs.overlayCanvas.height = `${window.innerHeight}`;
+        // objs.canvas1.style.transform = `scale(${canvasScalRatio})`;
+
+        const whiteRectWidth = objs.canvas1.width * 0.5;
+        values.rect1X[0] = 0;
+        values.rect1X[1] = values.rect1X[0] - whiteRectWidth;
+        values.rect2X[0] =
+          values.rect1X[0] + objs.canvas1.width - whiteRectWidth;
+        values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
+        objs.overlayContext.clearRect(
+          0,
+          0,
+          objs.overlayCanvas.width,
+          objs.overlayCanvas.height
+        );
+
+        // 아리 양옆 이미지
+        objs.overlayContext.drawImage(
+          objs.assets[0],
+          values.rect1X[0],
+          0,
+          parseInt(whiteRectWidth),
+          window.innerHeight
+        );
+        objs.overlayContext.drawImage(
+          objs.assets[1],
+          values.rect2X[0],
+          0,
+          parseInt(whiteRectWidth),
+          window.innerHeight
+        );
+        // 이미지 테두리
+        objs.overlayContext.strokeRect(
+          values.rect1X[0],
+          0,
+          parseInt(whiteRectWidth),
+          window.innerHeight
+        );
+        objs.overlayContext.strokeRect(
+          values.rect2X[0],
+          0,
+          parseInt(whiteRectWidth),
+          window.innerHeight
+        );
+      }
       break;
 
     case 3:
@@ -739,6 +805,12 @@ function playAnimation() {
       //   parseInt(whiteRectWidth),
       //   window.innerHeight
       // );
+      if (scrollRatio < values.rect1X[2].end) {
+        // 아리가 상단에 닿았을 때
+        objs.canvasContainer.classList.remove('sticky-elem');
+      } else {
+        objs.canvasContainer.classList.add('sticky-elem');
+      }
 
       break;
   }

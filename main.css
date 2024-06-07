@@ -327,9 +327,19 @@ html {
 #canvas_container {
   position: relative;
 }
+
+#canvas_container.sticky-elem {
+  top: 0;
+  position: fixed;
+}
+
 #fourth_section > p {
   height: 100vh;
 }
+/* .image-blend-canvas.sticky-elem,
+.image-blend-canvas-overlay.sticky-elem {
+  top: 0;
+} */
 
 .image-blend-canvas {
   width: 100%;
@@ -355,7 +365,8 @@ html {
   top: 0;
 }
 
-body#show-scene-1 #second_section .sticky-elem {
+body#show-scene-1 #second_section .sticky-elem,
+body#show-scene-3 #fourth_section .sticky-elem {
   display: block;
 }
 
