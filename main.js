@@ -118,15 +118,20 @@ const sceneInfo = [
       container: document.querySelector('#fourth_section'),
       canvasContainer: document.querySelector('#canvas_container'),
       canvas1: document.querySelector('.image-blend-canvas'),
+      canvasUp: document.querySelector('#image-blend-canvas-up'),
       overlayCanvas: document.querySelector('#image-blend-canvas-overlay'),
       context1: document.querySelector('.image-blend-canvas').getContext('2d'),
       overlayContext: document
         .querySelector('#image-blend-canvas-overlay')
         .getContext('2d'),
+      canvasUpContext: document
+        .querySelector('#image-blend-canvas-up')
+        .getContext('2d'),
       assetPath: [
         './imgs/faker_ahri.jpg',
         './imgs/faker_LeBlanc.jpg',
         './imgs/final_ahri.mp4',
+        './imgs/blend_faker.png',
       ],
       assets: [],
     },
@@ -697,10 +702,11 @@ function playAnimation() {
 
     case 3:
       // console.log('3 play');
-      const widthRatio = window.innerWidth / objs.canvas1.width;
-      const heightRatio = window.innerHeight / objs.canvas1.height;
+      const widthRatio = window.innerWidth / objs.canvasUp.width;
+      const heightRatio = window.innerHeight / objs.canvasUp.height;
       let canvasScalRatio;
-
+      objs.canvas1.style.opacity = 1;
+      objs.overlayCanvas.style.opacity = 1;
       // 어느 비율에서든 꽉 차게 비율을 구함.
       if (widthRatio <= heightRatio) {
         // 캔버스보다 브라우저 창이 홀쭉한 경우
@@ -710,11 +716,16 @@ function playAnimation() {
         canvasScalRatio = widthRatio;
       }
       // 캔버스는 픽셀단위라서 px를 명시해줄 필요가 없음
+      // 캔버스는 크기를 지정하면 그린 내용을 초기화 시킴
       objs.canvas1.width = `${document.body.offsetWidth}`;
       objs.canvas1.height = `${window.innerHeight}`;
       objs.overlayCanvas.width = `${document.body.offsetWidth}`;
       objs.overlayCanvas.height = `${window.innerHeight}`;
-      // objs.canvas1.style.transform = `scale(${canvasScalRatio})`;
+      // transform으로 했기때문에 초기화가 안됨
+      objs.canvasUp.style.transform = `scale(${canvasScalRatio})`;
+      objs.canvasUp.style.top = `${
+        -(objs.canvasUp.height - objs.canvasUp.height * canvasScalRatio) / 2
+      }px`;
 
       if (!values.rectStartY) {
         // 스크롤 이벤트가 발생한나 순간 값을 가져옴, 속도에 따라 값이 변함 (아래 코드는)
@@ -808,55 +819,71 @@ function playAnimation() {
       if (scrollRatio < values.rect1X[2].end) {
         // 아리가 상단에 닿았을 때
         objs.canvasContainer.classList.remove('sticky');
+
+        //objs.canvasUp.classList.('sticky');
       } else {
         objs.canvasContainer.classList.add('sticky');
+
+        //objs.canvasUp.classList.add('sticky');
+        console.log(canvasScalRatio);
 
         // 이미지 블렌드
         // imageBlendY: [0, 0, {start:y, end:0}]
         // 이미지의 width, height를 안 넣어주면 원래 이미지 크기로 그림
         values.blendHeight[0] = 0;
-        values.blendHeight[1] = objs.overlayCanvas.height;
+        values.blendHeight[1] = objs.canvasUp.height;
         values.blendHeight[2].start = values.rect1X[2].end;
         values.blendHeight[2].end = values.blendHeight[2].start + 0.2; // 스크롤 끝나는 기간을 정함
 
         // 크기가 가변적이기 때문에 이미지를 캔버스에 미리 그려놓고 복사
-        const [width, height] = [
-          objs.overlayCanvas.width,
-          objs.overlayCanvas.height,
-        ];
+
+        const [width, height] = [objs.canvasUp.width, objs.canvasUp.height];
 
         const tempCanvas = document.createElement('canvas');
         const tempCtx = tempCanvas.getContext('2d');
 
         tempCanvas.width = width;
         tempCanvas.height = height;
-        tempCtx.drawImage(objs.assets[0], 0, 0, width, height);
+        tempCtx.drawImage(objs.assets[3], 0, 0, width, height);
         const imageData = tempCtx.getImageData(0, 0, width, height);
 
-        const sourceImg = objs.assets[0];
         const blendHeight = calcValues(values.blendHeight, currentYOffset);
-        console.log(sourceImg.width, blendHeight);
-        objs.overlayContext.putImageData(
+
+        // 이미지 아래서 부터 그리기
+        // canvasUpContext는 크기를 다시 지정하지 않기 때문에 clearRect를 사용해야함
+        objs.canvasUpContext.clearRect(
+          0,
+          0,
+          tempCanvas.width,
+          tempCanvas.height
+        );
+        objs.canvasUpContext.putImageData(
           imageData,
           0,
           0,
           0,
-          objs.overlayCanvas.height - blendHeight,
+          objs.canvasUp.height - blendHeight,
           tempCanvas.width,
           tempCanvas.height
         );
-        //console.log(values.blendHeight, blendHeight);
-        // objs.overlayContext.drawImage(
-        //   objs.assets[1],
-        //   0,
-        //   objs.overlayCanvas.height - blendHeight,
-        //   objs.overlayCanvas.width,
-        //   blendHeight,
-        //   0,
-        //   objs.overlayCanvas.height - blendHeight,
-        //   objs.overlayCanvas.width,
-        //   blendHeight
-        // );
+      }
+
+      // 블랜드 이미지 축소 애니메이션 시작
+      if (scrollRatio > values.blendHeight[2].end) {
+        objs.canvas1.style.opacity = 0;
+        objs.overlayCanvas.style.opacity = 0;
+        values.canvas_scale[0] = canvasScalRatio; // 블랜드 이미지 축소 애니메이션 초기값
+        values.canvas_scale[1] =
+          document.body.offsetWidth / (1.2 * objs.canvasUp.width); // 블랜드 이미지 축소 애니메이션 끝값
+        values.canvas_scale[2].start = values.blendHeight[2].end; // 애니메이션 시작 위치
+        values.canvas_scale[2].end = values.canvas_scale[2].start + 0.2; // 애니메이션 시작 위치
+        console.log(calcValues(values.canvas_scale, currentYOffset));
+        objs.canvasUp.style.transform = `scale(${calcValues(
+          values.canvas_scale,
+          currentYOffset
+        )})`;
+        // 스크롤이 다시 올라갈 때 마진을 없애줘야함
+        //objs.canvas.style.marginTop = 0;
       }
 
       break;

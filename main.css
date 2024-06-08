@@ -13,6 +13,10 @@ html {
   }
 }
 
+body {
+  overflow-x: hidden;
+}
+
 /* common */
 
 .common_container {
@@ -326,6 +330,8 @@ html {
 
 #canvas_container {
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 #canvas_container.sticky {
@@ -354,13 +360,18 @@ html {
   height: 100vh;
 }
 
+#image-blend-canvas-up {
+  position: absolute;
+}
+
 .image-blend-canvas.sticky-elem {
   /* border: 3px solid red; */
   /* background-color: blue; */
   top: 0;
 }
 
-.image-blend-canvas.sticky {
+.image-blend-canvas.sticky,
+#image-blend-canvas-up.sticky {
   position: fixed;
   top: 0;
 }
