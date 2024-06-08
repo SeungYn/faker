@@ -625,12 +625,13 @@ function playAnimation() {
 
     case 2:
       // 2번 케이스에 오면 무조건 배경은 1
-      if (scrollRatio < 0.92) sceneInfo[2].objs.background.style.opacity = 1;
-      else
-        objs.background.style.opacity = calcValues(
-          values.background_opacity_out,
-          currentYOffset
-        );
+      sceneInfo[2].objs.background.style.opacity = 1;
+      // if (scrollRatio < 0.92) sceneInfo[2].objs.background.style.opacity = 1;
+      // else
+      //   objs.background.style.opacity = calcValues(
+      //     values.background_opacity_out,
+      //     currentYOffset
+      //   );
 
       if (scrollRatio >= 0.95) {
         // 4번째 씬 캔버스를 미리 그려줌
