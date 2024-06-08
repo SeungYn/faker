@@ -744,7 +744,7 @@ function playAnimation() {
         // 테두리 크기 지정
         objs.overlayContext.lineWidth = 20;
       }
-
+      console.log(values.rect1X);
       // 처음 진입시 비디오 재생
       if (!ahriVideoPlayStatus && ahriVideoReadyStatus) {
         console.log('비디오 재생 시작');
@@ -866,24 +866,36 @@ function playAnimation() {
           tempCanvas.width,
           tempCanvas.height
         );
-      }
 
-      // 블랜드 이미지 축소 애니메이션 시작
-      if (scrollRatio > values.blendHeight[2].end) {
-        objs.canvas1.style.opacity = 0;
-        objs.overlayCanvas.style.opacity = 0;
-        values.canvas_scale[0] = canvasScalRatio; // 블랜드 이미지 축소 애니메이션 초기값
-        values.canvas_scale[1] =
-          document.body.offsetWidth / (1.2 * objs.canvasUp.width); // 블랜드 이미지 축소 애니메이션 끝값
-        values.canvas_scale[2].start = values.blendHeight[2].end; // 애니메이션 시작 위치
-        values.canvas_scale[2].end = values.canvas_scale[2].start + 0.2; // 애니메이션 시작 위치
-        console.log(calcValues(values.canvas_scale, currentYOffset));
-        objs.canvasUp.style.transform = `scale(${calcValues(
-          values.canvas_scale,
-          currentYOffset
-        )})`;
-        // 스크롤이 다시 올라갈 때 마진을 없애줘야함
-        //objs.canvas.style.marginTop = 0;
+        // 블랜드 이미지 축소 애니메이션 시작
+        if (scrollRatio > values.blendHeight[2].end) {
+          objs.canvas1.style.opacity = 0;
+          objs.overlayCanvas.style.opacity = 0;
+          values.canvas_scale[0] = canvasScalRatio; // 블랜드 이미지 축소 애니메이션 초기값
+          values.canvas_scale[1] =
+            document.body.offsetWidth / (1.2 * objs.canvasUp.width); // 블랜드 이미지 축소 애니메이션 끝값
+          values.canvas_scale[2].start = values.blendHeight[2].end; // 애니메이션 시작 위치
+          values.canvas_scale[2].end = values.canvas_scale[2].start + 0.2; // 애니메이션 시작 위치
+          console.log(calcValues(values.canvas_scale, currentYOffset));
+          objs.canvasUp.style.transform = `scale(${calcValues(
+            values.canvas_scale,
+            currentYOffset
+          )})`;
+          // 스크롤이 다시 올라갈 때 마진을 없애줘야함
+          objs.canvasContainer.style.marginTop = 0;
+        }
+
+        if (
+          values.canvas_scale[2].end > 0 &&
+          scrollRatio > values.canvas_scale[2].end
+        ) {
+          console.log('이미지 축소 끝 ');
+          // 블랜드 이미지가 fixed일 때 스크롤 된 길이 만큼 마진으로 해줘야함
+          // fixed를 풀어주면 그만큼 위로 위치가 올라가기 때문
+          // 근데 0.4배를 해주면됨 블랜드 이미지가 스크롤 이벤트가 실행된 기간은 0.4, 40퍼센트이기 때문
+          objs.canvasContainer.classList.remove('sticky');
+          objs.canvasContainer.style.marginTop = `${scrollHeight * 0.4}px`;
+        }
       }
 
       break;
