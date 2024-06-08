@@ -708,6 +708,7 @@ function playAnimation() {
       let canvasScalRatio;
       objs.canvas1.style.opacity = 1;
       objs.overlayCanvas.style.opacity = 1;
+      console.log(values);
       // 어느 비율에서든 꽉 차게 비율을 구함.
       if (widthRatio <= heightRatio) {
         // 캔버스보다 브라우저 창이 홀쭉한 경우
