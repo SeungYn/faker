@@ -328,7 +328,7 @@ html {
   position: relative;
 }
 
-#canvas_container.sticky-elem {
+#canvas_container.sticky {
   top: 0;
   position: fixed;
 }

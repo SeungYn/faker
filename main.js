@@ -757,12 +757,12 @@ function playAnimation() {
       // objs.context1.drawImage(objs.assets[1], 0, 0);
       // objs.context1.fillRect(0, 0, 500, 500);
 
-      objs.overlayContext.clearRect(
-        0,
-        0,
-        objs.overlayCanvas.width,
-        objs.overlayCanvas.height
-      );
+      // objs.overlayContext.clearRect(
+      //   0,
+      //   0,
+      //   objs.overlayCanvas.width,
+      //   objs.overlayCanvas.height
+      // );
 
       // 아리 양옆 이미지
       objs.overlayContext.drawImage(
@@ -807,9 +807,56 @@ function playAnimation() {
       // );
       if (scrollRatio < values.rect1X[2].end) {
         // 아리가 상단에 닿았을 때
-        objs.canvasContainer.classList.remove('sticky-elem');
+        objs.canvasContainer.classList.remove('sticky');
       } else {
-        objs.canvasContainer.classList.add('sticky-elem');
+        objs.canvasContainer.classList.add('sticky');
+
+        // 이미지 블렌드
+        // imageBlendY: [0, 0, {start:y, end:0}]
+        // 이미지의 width, height를 안 넣어주면 원래 이미지 크기로 그림
+        values.blendHeight[0] = 0;
+        values.blendHeight[1] = objs.overlayCanvas.height;
+        values.blendHeight[2].start = values.rect1X[2].end;
+        values.blendHeight[2].end = values.blendHeight[2].start + 0.2; // 스크롤 끝나는 기간을 정함
+
+        // 크기가 가변적이기 때문에 이미지를 캔버스에 미리 그려놓고 복사
+        const [width, height] = [
+          objs.overlayCanvas.width,
+          objs.overlayCanvas.height,
+        ];
+
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        tempCtx.drawImage(objs.assets[0], 0, 0, width, height);
+        const imageData = tempCtx.getImageData(0, 0, width, height);
+
+        const sourceImg = objs.assets[0];
+        const blendHeight = calcValues(values.blendHeight, currentYOffset);
+        console.log(sourceImg.width, blendHeight);
+        objs.overlayContext.putImageData(
+          imageData,
+          0,
+          0,
+          0,
+          objs.overlayCanvas.height - blendHeight,
+          tempCanvas.width,
+          tempCanvas.height
+        );
+        //console.log(values.blendHeight, blendHeight);
+        // objs.overlayContext.drawImage(
+        //   objs.assets[1],
+        //   0,
+        //   objs.overlayCanvas.height - blendHeight,
+        //   objs.overlayCanvas.width,
+        //   blendHeight,
+        //   0,
+        //   objs.overlayCanvas.height - blendHeight,
+        //   objs.overlayCanvas.width,
+        //   blendHeight
+        // );
       }
 
       break;
