@@ -112,7 +112,7 @@ const sceneInfo = [
   {
     //3
     type: 'sticky', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
-    heightNum: 5, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
+    heightNum: 6, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
     scrollHeight: 0,
     objs: {
       container: document.querySelector('#fourth_section'),
@@ -834,7 +834,7 @@ function playAnimation() {
         values.blendHeight[0] = 0;
         values.blendHeight[1] = objs.canvasUp.height;
         values.blendHeight[2].start = values.rect1X[2].end;
-        values.blendHeight[2].end = values.blendHeight[2].start + 0.2; // 스크롤 끝나는 기간을 정함
+        values.blendHeight[2].end = values.blendHeight[2].start + 0.25; // 스크롤 끝나는 기간을 정함
 
         // 크기가 가변적이기 때문에 이미지를 캔버스에 미리 그려놓고 복사
 
@@ -876,7 +876,7 @@ function playAnimation() {
           values.canvas_scale[1] =
             document.body.offsetWidth / (1.2 * objs.canvasUp.width); // 블랜드 이미지 축소 애니메이션 끝값
           values.canvas_scale[2].start = values.blendHeight[2].end; // 애니메이션 시작 위치
-          values.canvas_scale[2].end = values.canvas_scale[2].start + 0.2; // 애니메이션 시작 위치
+          values.canvas_scale[2].end = values.canvas_scale[2].start + 0.25; // 애니메이션 시작 위치
           console.log(calcValues(values.canvas_scale, currentYOffset));
           objs.canvasUp.style.transform = `scale(${calcValues(
             values.canvas_scale,
@@ -895,7 +895,7 @@ function playAnimation() {
           // fixed를 풀어주면 그만큼 위로 위치가 올라가기 때문
           // 근데 0.4배를 해주면됨 블랜드 이미지가 스크롤 이벤트가 실행된 기간은 0.4, 40퍼센트이기 때문
           objs.canvasContainer.classList.remove('sticky');
-          objs.canvasContainer.style.marginTop = `${scrollHeight * 0.4}px`;
+          objs.canvasContainer.style.marginTop = `${scrollHeight * 0.5}px`;
         }
       }
 
