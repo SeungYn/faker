@@ -4,6 +4,13 @@ let currentScene = 0; //현재 활성화된 씬
 let enterNewScene = false; // 새로운 씬이 시작된 순간
 let ahriVideoPlayStatus = false;
 let ahriVideoReadyStatus = false;
+
+// 스크롤 감속 처리 변수들
+let acc = 0.3;
+let delayedYOffset = 0;
+let rafId;
+let rafState;
+
 //4개의 스크롤 구간에 대한 객체배열
 const sceneInfo = [
   {
@@ -182,15 +189,10 @@ function setCanvasImages() {
       imgElem.loop = true;
       // 자동재생 조건 만족시키기
       imgElem.muted = true;
-      console.log({ imgElem });
-      Object.keys(imgElem).forEach((property) => {
-        console.log(property + ':', imgElem[property]);
-      });
     }
     imgElem.src = sceneInfo[3].objs.assetPath[i];
     sceneInfo[3].objs.assets.push(imgElem);
   }
-  console.log(sceneInfo[3].objs.assets);
 
   //console.log(sceneInfo[1].objs.wakeUpImages);
 }
@@ -369,25 +371,25 @@ function playAnimation() {
       // );
       //
 
-      const sequence1 = Math.round(
-        calcValues(values.wakeUpImageSequence, currentYOffset)
-      );
+      // const sequence1 = Math.round(
+      //   calcValues(values.wakeUpImageSequence, currentYOffset)
+      // );
 
-      objs.context1.drawImage(objs.wakeUpImages[sequence1], 0, 0);
-      objs.canvas1.style.opacity = calcValues(
-        values.wakeUpCanvas_opacity,
-        currentYOffset
-      );
+      // objs.context1.drawImage(objs.wakeUpImages[sequence1], 0, 0);
+      // objs.canvas1.style.opacity = calcValues(
+      //   values.wakeUpCanvas_opacity,
+      //   currentYOffset
+      // );
 
-      const sequence2 = Math.round(
-        calcValues(values.liftImageSequence, currentYOffset)
-      );
-      //console.log('sequence2', sequence2);
-      objs.context2.drawImage(objs.liftImages[sequence2], 0, 0);
-      objs.canvas2.style.opacity = calcValues(
-        values.liftCanvas_opacity_in,
-        currentYOffset
-      );
+      // const sequence2 = Math.round(
+      //   calcValues(values.liftImageSequence, currentYOffset)
+      // );
+      // //console.log('sequence2', sequence2);
+      // objs.context2.drawImage(objs.liftImages[sequence2], 0, 0);
+      // objs.canvas2.style.opacity = calcValues(
+      //   values.liftCanvas_opacity_in,
+      //   currentYOffset
+      // );
 
       if (scrollRatio <= 0.1) {
         const messageA_opacity_in = calcValues(
@@ -708,7 +710,7 @@ function playAnimation() {
       let canvasScalRatio;
       objs.canvas1.style.opacity = 1;
       objs.overlayCanvas.style.opacity = 1;
-      console.log(values);
+
       // 어느 비율에서든 꽉 차게 비율을 구함.
       if (widthRatio <= heightRatio) {
         // 캔버스보다 브라우저 창이 홀쭉한 경우
@@ -742,11 +744,11 @@ function playAnimation() {
         // 해당 캔버스가 맨위로 가는 시점을 비율료 나타낸것
         values.rect1X[2].end = values.rectStartY / scrollHeight;
         values.rect2X[2].end = values.rectStartY / scrollHeight;
-        console.log('top', objs.canvasContainer.offsetTop, values);
+
         // 테두리 크기 지정
         objs.overlayContext.lineWidth = 20;
       }
-      console.log(values.rect1X);
+
       // 처음 진입시 비디오 재생
       if (!ahriVideoPlayStatus && ahriVideoReadyStatus) {
         console.log('비디오 재생 시작');
@@ -823,11 +825,10 @@ function playAnimation() {
         objs.canvasContainer.classList.remove('sticky');
 
         //objs.canvasUp.classList.('sticky');
-      } else {
+      } else if (scrollRatio >= values.rect1X[2].end) {
         objs.canvasContainer.classList.add('sticky');
 
         //objs.canvasUp.classList.add('sticky');
-        console.log(canvasScalRatio);
 
         // 이미지 블렌드
         // imageBlendY: [0, 0, {start:y, end:0}]
@@ -878,7 +879,7 @@ function playAnimation() {
             document.body.offsetWidth / (1.2 * objs.canvasUp.width); // 블랜드 이미지 축소 애니메이션 끝값
           values.canvas_scale[2].start = values.blendHeight[2].end; // 애니메이션 시작 위치
           values.canvas_scale[2].end = values.canvas_scale[2].start + 0.25; // 애니메이션 시작 위치
-          console.log(calcValues(values.canvas_scale, currentYOffset));
+
           objs.canvasUp.style.transform = `scale(${calcValues(
             values.canvas_scale,
             currentYOffset
@@ -891,7 +892,6 @@ function playAnimation() {
           values.canvas_scale[2].end > 0 &&
           scrollRatio > values.canvas_scale[2].end
         ) {
-          console.log('이미지 축소 끝 ');
           // 블랜드 이미지가 fixed일 때 스크롤 된 길이 만큼 마진으로 해줘야함
           // fixed를 풀어주면 그만큼 위로 위치가 올라가기 때문
           // 근데 0.4배를 해주면됨 블랜드 이미지가 스크롤 이벤트가 실행된 기간은 0.4, 40퍼센트이기 때문
@@ -929,38 +929,6 @@ function playAnimation() {
     });
   }
 }
-
-// 페이커 아리 애니메이션 부분
-// function canvasVideoAutoPlay(
-//   context,
-//   video,
-//   width,
-//   height,
-//   values,
-//   currentYOffset
-// ) {
-//   if (!ahriVideoPlayStatus) return;
-
-//   //context.drawImage(video, 0, 0, 100, 100);
-//   context.drawImage(video, 0, 0, width, height);
-//   context.fillRect(
-//     parseInt(calcValues(values.rect1X, currentYOffset)),
-//     0,
-//     parseInt(width * 0.15),
-//     height
-//   );
-//   context.fillRect(
-//     parseInt(calcValues(values.rect2X, currentYOffset)),
-//     0,
-//     parseInt(width * 0.15),
-//     height
-//   );
-
-//   //context.drawImage(video, 0, 0);
-//   requestAnimationFrame(() => {
-//     canvasVideoAutoPlay(context, video, width, height, values, currentYOffset);
-//   });
-// }
 
 // 수상경력 iframe toggle 이벤트
 function awardEventEnroll() {
@@ -1031,6 +999,54 @@ function scrollLoop() {
   playAnimation();
 }
 
+// 애니메이션 감속처리 루프
+function loop() {
+  // 속도 감속처리 식
+  delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
+
+  if (!enterNewScene) {
+    // 씬이 바뀔 때 계산 오차를 방지하기 위해 enterNewScene가 아닐 때 수행
+
+    if (currentScene === 1) {
+      const currentYOffset = delayedYOffset - prevScrollHeight;
+      const objs = sceneInfo[currentScene].objs;
+      const values = sceneInfo[currentScene].values;
+
+      const sequence1 = Math.round(
+        calcValues(values.wakeUpImageSequence, currentYOffset)
+      );
+      if (objs.wakeUpImages[sequence1]) {
+        objs.context1.drawImage(objs.wakeUpImages[sequence1], 0, 0);
+        objs.canvas1.style.opacity = calcValues(
+          values.wakeUpCanvas_opacity,
+          currentYOffset
+        );
+      }
+
+      const sequence2 = Math.round(
+        calcValues(values.liftImageSequence, currentYOffset)
+      );
+      //console.log('sequence2', sequence2);
+      if (objs.wakeUpImages[sequence2]) {
+        objs.context2.drawImage(objs.liftImages[sequence2], 0, 0);
+        objs.canvas2.style.opacity = calcValues(
+          values.liftCanvas_opacity_in,
+          currentYOffset
+        );
+      }
+    }
+  }
+
+  rafId = requestAnimationFrame(loop);
+
+  // 무한 호출을 멈추기 위한 과정
+  // abs는 스크롤을 위로할 때 대비
+  if (Math.abs(yOffset - delayedYOffset) < 1) {
+    cancelAnimationFrame(rafId);
+    rafState = false;
+  }
+}
+
 loadImages();
 setCanvasImages();
 awardEventEnroll();
@@ -1038,6 +1054,11 @@ awardEventEnroll();
 window.addEventListener('scroll', (e) => {
   yOffset = window.scrollY;
   scrollLoop();
+
+  if (!rafState) {
+    rafId = requestAnimationFrame(loop);
+    rafState = true;
+  }
 });
 
 window.addEventListener('load', () => {

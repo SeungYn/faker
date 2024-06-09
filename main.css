@@ -401,6 +401,7 @@ body {
 body#show-scene-1 #second_section .sticky-elem,
 body#show-scene-3 #fourth_section .sticky-elem {
   display: block;
+  will-change: transform, opacity;
 }
 
 @keyframes faker_quotation {
