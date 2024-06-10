@@ -4,6 +4,7 @@ let currentScene = 0; //현재 활성화된 씬
 let enterNewScene = false; // 새로운 씬이 시작된 순간
 let ahriVideoPlayStatus = false;
 let ahriVideoReadyStatus = false;
+let tempedCanvasImageData = null;
 
 // 스크롤 감속 처리 변수들
 let acc = 0.1;
@@ -127,6 +128,7 @@ const sceneInfo = [
       canvas1: document.querySelector('.image-blend-canvas'),
       canvasUp: document.querySelector('#image-blend-canvas-up'),
       overlayCanvas: document.querySelector('#image-blend-canvas-overlay'),
+      tempedCanvas: document.createElement('canvas'),
       context1: document.querySelector('.image-blend-canvas').getContext('2d'),
       overlayContext: document
         .querySelector('#image-blend-canvas-overlay')
@@ -842,32 +844,27 @@ function playAnimation() {
 
         const [width, height] = [objs.canvasUp.width, objs.canvasUp.height];
 
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
+        // const tempCanvas = document.createElement('canvas');
+        // const tempCtx = tempCanvas.getContext('2d');
 
-        tempCanvas.width = width;
-        tempCanvas.height = height;
-        tempCtx.drawImage(objs.assets[3], 0, 0, width, height);
-        const imageData = tempCtx.getImageData(0, 0, width, height);
+        // tempCanvas.width = width;
+        // tempCanvas.height = height;
+        // tempCtx.drawImage(objs.assets[3], 0, 0, width, height);
+        const imageData = tempedCanvas(width, height);
 
         const blendHeight = calcValues(values.blendHeight, currentYOffset);
 
         // 이미지 아래서 부터 그리기
         // canvasUpContext는 크기를 다시 지정하지 않기 때문에 clearRect를 사용해야함
-        objs.canvasUpContext.clearRect(
-          0,
-          0,
-          tempCanvas.width,
-          tempCanvas.height
-        );
+        objs.canvasUpContext.clearRect(0, 0, width, height);
         objs.canvasUpContext.putImageData(
           imageData,
           0,
           0,
           0,
           objs.canvasUp.height - blendHeight,
-          tempCanvas.width,
-          tempCanvas.height
+          width,
+          height
         );
 
         // 블랜드 이미지 축소 애니메이션 시작
@@ -902,6 +899,25 @@ function playAnimation() {
 
       break;
   }
+}
+
+// 네번째 씬 세번째 블랜딩 캔버스 초기화
+function tempedCanvas(width, height) {
+  if (tempedCanvasImageData) return tempedCanvasImageData;
+
+  const tempCanvas = sceneInfo[3].objs.tempedCanvas;
+  const tempCtx = tempCanvas.getContext('2d');
+
+  tempCanvas.width = width;
+  tempCanvas.height = height;
+  try {
+    tempCtx.drawImage(sceneInfo[3].objs.assets[3], 0, 0, width, height);
+  } catch (e) {
+    console.log('아직 이미지가 준비 안됨');
+  }
+  const imageData = tempCtx.getImageData(0, 0, width, height);
+  tempedCanvasImageData = imageData;
+  return imageData;
 }
 
 function canvasVideoAutoPlay(
