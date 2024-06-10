@@ -1064,6 +1064,7 @@ function loop() {
 }
 
 window.addEventListener('load', () => {
+  document.body.classList.remove('before-load');
   loadImages();
   setCanvasImages();
   awardEventEnroll();
@@ -1127,12 +1128,10 @@ window.addEventListener('load', () => {
     }, 500);
   });
 
-  // document
-  //   .querySelector('.loading')
-  //   .addEventListener('transitionend', (e) => {
-  //     // 트랜지션이 끝났을 때 이벤트
-  //     document.body.removeChild(e.currentTarget);
-  //   });
+  document.querySelector('.loading').addEventListener('transitionend', (e) => {
+    // 트랜지션이 끝났을 때 이벤트
+    document.body.removeChild(e.currentTarget);
+  });
 });
 
 //fadeInFakerImage();
