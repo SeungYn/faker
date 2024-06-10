@@ -137,10 +137,10 @@ const sceneInfo = [
         .querySelector('#image-blend-canvas-up')
         .getContext('2d'),
       assetPath: [
-        './imgs/faker_ahri.jpg',
-        './imgs/faker_LeBlanc.jpg',
-        './imgs/final_ahri.mp4',
-        './imgs/blend_faker.png',
+        '/imgs/faker_ahri.jpg',
+        '/imgs/faker_LeBlanc.jpg',
+        '/imgs/final_ahri.mp4',
+        '/imgs/blend_faker.png',
       ],
       assets: [],
     },
@@ -163,14 +163,14 @@ const sceneInfo = [
 function setCanvasImages() {
   for (let i = 1; i <= sceneInfo[1].values.videoImageCount; i++) {
     const imgElem = document.createElement('img');
-    imgElem.src = `./videos/faker-wakeup/${i}.jpg`;
+    imgElem.src = `/videos/faker-wakeup/${i}.jpg`;
     sceneInfo[1].objs.wakeUpImages.push(imgElem);
   }
 
   for (let i = 1; i <= sceneInfo[1].values.liftImageCount; i++) {
     if (i % 2 !== 0) continue;
     const imgElem = document.createElement('img');
-    imgElem.src = `./videos/faker-cup/${i}.jpg`;
+    imgElem.src = `/videos/faker-cup/${i}.jpg`;
     sceneInfo[1].objs.liftImages.push(imgElem);
   }
 
@@ -178,7 +178,7 @@ function setCanvasImages() {
     let imgElem;
     if (
       ['jpg', 'png'].includes(
-        sceneInfo[3].objs.assetPath[i].split('.')[2].toLowerCase()
+        sceneInfo[3].objs.assetPath[i].split('.')[1].toLowerCase()
       )
     ) {
       imgElem = document.createElement('img');
@@ -310,7 +310,7 @@ function fadeInFakerImage() {
 function loadImages() {
   // 인트로 이미지 로드
   const introFakerImage = document.createElement('img');
-  introFakerImage.src = './imgs/intro-fade-in-faker.png';
+  introFakerImage.src = '/imgs/intro-fade-in-faker.png';
   introFakerImage.onload = () => {
     console.log('안녕하세요');
     setTimeout(() => {
