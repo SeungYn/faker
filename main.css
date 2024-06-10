@@ -197,6 +197,7 @@ body.before-load {
   padding-top: 30vh;
   padding-bottom: 30vh;
   width: 100%;
+  overflow-y: scroll;
 }
 /* 금색 배경 그림자 부분 */
 /* linear-gradient(180deg,#0f0e09 66%,#494034 86%,#aa9678 107%,#d8ccb9 117%,#f0ebe3 134%) */
@@ -214,6 +215,7 @@ body.before-load {
 .award_wrap {
   position: relative;
   z-index: 10;
+  overflow-y: scroll;
 }
 
 .award_wrap_list {
