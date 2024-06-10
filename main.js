@@ -365,7 +365,7 @@ function playAnimation() {
   //console.log(currentScene);
   // 현재 씬만 애니메이션 되도록 해주는 함수
   switch (currentScene) {
-    case 9:
+    case 1:
       // let sequence = Math.round(
       //   calcValues(values.imageSequence, currentYOffset)
       // );
