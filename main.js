@@ -274,7 +274,7 @@ function fadeInFakerImage() {
       window.requestAnimationFrame(() => {
         fadeInRequestAnimaionPutImageWave();
       });
-    } else if (y < objs.canvas.height && x > objs.canvas.width) {
+    } else if (y < objs.canvas.height && x >= objs.canvas.width) {
       window.requestAnimationFrame(() => {
         fadeInRequestAnimaionPutImageWave();
       });
