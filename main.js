@@ -365,7 +365,7 @@ function playAnimation() {
   //console.log(currentScene);
   // 현재 씬만 애니메이션 되도록 해주는 함수
   switch (currentScene) {
-    case 1:
+    case 9:
       // let sequence = Math.round(
       //   calcValues(values.imageSequence, currentYOffset)
       // );
@@ -1041,24 +1041,76 @@ function loop() {
   }
 }
 
-loadImages();
-setCanvasImages();
-awardEventEnroll();
-
-window.addEventListener('scroll', (e) => {
-  yOffset = window.scrollY;
-  scrollLoop();
-
-  if (!rafState) {
-    rafId = requestAnimationFrame(loop);
-    rafState = true;
-  }
-});
-
 window.addEventListener('load', () => {
+  loadImages();
+  setCanvasImages();
+  awardEventEnroll();
   setLayout();
   //awardEventEnroll();
   // loadImages();
+
+  window.addEventListener('scroll', (e) => {
+    yOffset = window.scrollY;
+    scrollLoop();
+
+    if (!rafState) {
+      rafId = requestAnimationFrame(loop);
+      rafState = true;
+    }
+  });
+
+  let tempYOffset = yOffset;
+  let tempScrollCount = 0;
+
+  if (yOffset > 10) {
+    let siId = setInterval(() => {
+      window.scrollTo(0, tempYOffset);
+      tempYOffset += 2;
+      tempScrollCount++;
+
+      if (tempScrollCount > 10) {
+        clearInterval(siId);
+      }
+    }, 20);
+  }
+
+  // 로드 이후 애니메이션이 일어나도록 수정
+  window.addEventListener('scroll', () => {
+    //console.log('scroll');
+    yOffset = window.pageYOffset;
+    scrollLoop();
+
+    if (!rafState) {
+      rafId = requestAnimationFrame(loop);
+      rafState = true;
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 600) {
+      // 사이즈가 바뀔 때 해당값을 변경해주지 않음
+      // 기존의 아래 값은 0일때 한번 세팅을 해줌 하지만 resize가 일어나면 값을 바꿔주기 떄문에 설정
+      // setLayout();
+      // sceneInfo[3].values.rectStartY = 0;
+
+      window.location.reload();
+    }
+  });
+
+  window.addEventListener('orientationchange', () => {
+    // 모바일에서 방향전환이 일어날 때 가로 세로
+    scrollTo(0, 0);
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  });
+
+  // document
+  //   .querySelector('.loading')
+  //   .addEventListener('transitionend', (e) => {
+  //     // 트랜지션이 끝났을 때 이벤트
+  //     document.body.removeChild(e.currentTarget);
+  //   });
 });
 
 //fadeInFakerImage();
