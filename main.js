@@ -955,6 +955,36 @@ function awardEventEnroll() {
     item.addEventListener('click', () => {
       currentIndex = i;
 
+      // 클릭되면 변화된 길이만큼 동적으로 높이를 조정해줌
+      if (!item.classList.contains('active')) {
+        console.log(123);
+        console.log(sceneInfo[2].objs.scrollHeight);
+        if (window.offsetWidth < 1024) {
+          sceneInfo[2].objs.container.style.height = `${
+            sceneInfo[2].scrollHeight + 400
+          }px`;
+          sceneInfo[2].scrollHeight += 400;
+        } else {
+          sceneInfo[2].objs.container.style.height = `${
+            sceneInfo[2].scrollHeight + 700
+          }px`;
+          sceneInfo[2].scrollHeight += 700;
+        }
+        console.log(sceneInfo[2].objs.scrollHeight);
+      } else {
+        if (window.offsetWidth < 1024) {
+          sceneInfo[2].objs.container.style.height = `${
+            sceneInfo[2].scrollHeight - 400
+          }px`;
+          sceneInfo[2].scrollHeight -= 400;
+        } else {
+          sceneInfo[2].objs.container.style.height = `${
+            sceneInfo[2].scrollHeight - 700
+          }px`;
+          sceneInfo[2].scrollHeight -= 700;
+        }
+      }
+
       const timeLineHeight = Math.min(
         item.querySelector('p').getBoundingClientRect().height / 2 +
           item.offsetTop,
