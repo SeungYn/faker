@@ -1,0 +1,22 @@
+{
+  "name": "faker",
+  "version": "1.0.0",
+  "description": "faker fan page",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeungYn/faker.git"
+  },
+  "keywords": [
+    "faker"
+  ],
+  "author": "seungyn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SeungYn/faker/issues"
+  },
+  "homepage": "https://github.com/SeungYn/faker#readme"
+}
