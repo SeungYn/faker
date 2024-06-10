@@ -6,7 +6,7 @@ let ahriVideoPlayStatus = false;
 let ahriVideoReadyStatus = false;
 
 // 스크롤 감속 처리 변수들
-let acc = 0.3;
+let acc = 0.1;
 let delayedYOffset = 0;
 let rafId;
 let rafState;
@@ -757,7 +757,7 @@ function playAnimation() {
         canvasVideoAutoPlay(
           objs.context1,
           objs.assets[2],
-          window.innerWidth,
+          objs.canvas1.width,
           window.innerHeight,
           values,
           currentYOffset
@@ -902,32 +902,25 @@ function playAnimation() {
 
       break;
   }
+}
 
-  function canvasVideoAutoPlay(
-    context,
-    video,
-    width,
-    height,
-    values,
-    currentYOffset
-  ) {
-    if (!ahriVideoPlayStatus) return;
+function canvasVideoAutoPlay(
+  context,
+  video,
+  width,
+  height,
+  values,
+  currentYOffset
+) {
+  if (!ahriVideoPlayStatus) return;
 
-    //context.drawImage(video, 0, 0, 100, 100);
-    context.drawImage(video, 0, 0, width, height);
+  //context.drawImage(video, 0, 0, 100, 100);
+  context.drawImage(video, 0, 0, width, height);
 
-    //context.drawImage(video, 0, 0);
-    requestAnimationFrame(() => {
-      canvasVideoAutoPlay(
-        context,
-        video,
-        width,
-        height,
-        values,
-        currentYOffset
-      );
-    });
-  }
+  //context.drawImage(video, 0, 0);
+  requestAnimationFrame(() => {
+    canvasVideoAutoPlay(context, video, width, height, values, currentYOffset);
+  });
 }
 
 // 수상경력 iframe toggle 이벤트
@@ -1026,8 +1019,9 @@ function loop() {
       const sequence2 = Math.round(
         calcValues(values.liftImageSequence, currentYOffset)
       );
+
       //console.log('sequence2', sequence2);
-      if (objs.wakeUpImages[sequence2]) {
+      if (objs.liftImages[sequence2]) {
         objs.context2.drawImage(objs.liftImages[sequence2], 0, 0);
         objs.canvas2.style.opacity = calcValues(
           values.liftCanvas_opacity_in,
