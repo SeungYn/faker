@@ -975,13 +975,19 @@ function scrollLoop() {
   //console.log(sceneInfo[currentScene], currentScene);
   // 애니메이션 감속 처리때문에 기존의 yOffset으로 판별하면 어색해질 수 있음
   // 그걸 방지하기 위해 yOffset > delayedYOffset으로 변경 기존 다른 애니메이션은 상돤이 없음
-  if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+  if (
+    delayedYOffset >
+    prevScrollHeight + sceneInfo[currentScene].scrollHeight
+  ) {
     enterNewScene = true;
-    currentScene++;
+    // 씬이 3을 안 넘어가게 하기
+    if (currentScene < sceneInfo.length - 1) {
+      currentScene++;
+    }
     document.body.setAttribute('id', `show-scene-${currentScene}`);
   }
 
-  if (yOffset < prevScrollHeight) {
+  if (delayedYOffset < prevScrollHeight) {
     enterNewScene = true;
     if (currentScene === 0) return; //브라우져가 바운스효과가 일어나면 yOffset이 마이너스가 될 수 있음 그걸 방지
     currentScene--;
