@@ -1094,9 +1094,9 @@ function loop() {
 }
 
 window.addEventListener('load', () => {
-  document.body.classList.remove('before-load');
   loadImages();
   setCanvasImages();
+  document.body.classList.remove('before-load');
   awardEventEnroll();
   setLayout();
   //awardEventEnroll();
