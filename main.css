@@ -144,6 +144,8 @@ body.before-load {
   font-size: 5rem;
   margin-bottom: 6rem;
   animation: faker_quotation 2s;
+  word-break: keep-all;
+  text-align: center;
 }
 
 .intro_section > img {
