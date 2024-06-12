@@ -142,7 +142,7 @@ body.before-load {
   color: white;
   font-style: italic;
   font-size: 4rem;
-  margin-bottom: 6rem;
+  margin-bottom: 4rem;
   animation: faker_quotation 2s;
   word-break: keep-all;
   text-align: center;
@@ -537,7 +537,7 @@ body#show-scene-3 #fourth_section .sticky-elem {
 @media screen and (min-width: 500px) {
   .intro_section > img {
     width: 400px;
-    aspect-ratio: 1 / 1.4;
+    aspect-ratio: 1 / 1.2;
   }
 }
 
@@ -631,6 +631,16 @@ body#show-scene-3 #fourth_section .sticky-elem {
 }
 
 @media screen and (min-width: 1300px) {
+  .intro_section > h2 {
+    color: white;
+    font-style: italic;
+    font-size: 4rem;
+    margin-bottom: 6rem;
+    animation: faker_quotation 2s;
+    word-break: keep-all;
+    text-align: center;
+  }
+
   .intro_section > img {
     width: 600px;
     aspect-ratio: 1/1.5;
