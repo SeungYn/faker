@@ -5,6 +5,7 @@ let enterNewScene = false; // 새로운 씬이 시작된 순간
 let ahriVideoPlayStatus = false;
 let ahriVideoReadyStatus = false;
 let tempedCanvasImageData = null;
+let isMediaDataLoad = false;
 
 // 스크롤 감속 처리 변수들
 let acc = 0.1;
@@ -161,9 +162,28 @@ const sceneInfo = [
  * 캔버스 이미지, 영상 로드
  */
 function setCanvasImages() {
+  let imageCount = 0;
+  let totalImageCount =
+    sceneInfo[1].values.videoImageCount +
+    Math.floor(sceneInfo[1].values.liftImageCount / 2) +
+    sceneInfo[3].objs.assetPath.length;
+  console.log(
+    sceneInfo[1].values.videoImageCount,
+    Math.floor(sceneInfo[1].values.liftImageCount / 2),
+    sceneInfo[3].objs.assetPath.length
+  );
   for (let i = 1; i <= sceneInfo[1].values.videoImageCount; i++) {
     const imgElem = document.createElement('img');
     imgElem.src = `/videos/faker-wakeup/${i}.jpg`;
+    imgElem.onload = () => {
+      imageCount++;
+
+      if (imageCount >= totalImageCount) {
+        isMediaDataLoad = true;
+        document.body.classList.remove('before-load');
+        afterMideaLoad();
+      }
+    };
     sceneInfo[1].objs.wakeUpImages.push(imgElem);
   }
 
@@ -171,6 +191,15 @@ function setCanvasImages() {
     if (i % 2 !== 0) continue;
     const imgElem = document.createElement('img');
     imgElem.src = `/videos/faker-cup/${i}.jpg`;
+    imgElem.onload = () => {
+      imageCount++;
+
+      if (imageCount >= totalImageCount) {
+        isMediaDataLoad = true;
+        document.body.classList.remove('before-load');
+        afterMideaLoad();
+      }
+    };
     sceneInfo[1].objs.liftImages.push(imgElem);
   }
 
@@ -187,12 +216,28 @@ function setCanvasImages() {
       // 비디오의 모든 정보 이벤트 크기, 시속시간 등
       imgElem.onloadedmetadata = () => {
         ahriVideoReadyStatus = true;
+        imageCount++;
+        if (imageCount >= totalImageCount) {
+          isMediaDataLoad = true;
+          document.body.classList.remove('before-load');
+          afterMideaLoad();
+        }
       };
+
       imgElem.loop = true;
       // 자동재생 조건 만족시키기
       imgElem.muted = true;
     }
+
     imgElem.src = sceneInfo[3].objs.assetPath[i];
+    imgElem.onload = () => {
+      imageCount++;
+      if (imageCount >= totalImageCount) {
+        isMediaDataLoad = true;
+        document.body.classList.remove('before-load');
+        afterMideaLoad();
+      }
+    };
     sceneInfo[3].objs.assets.push(imgElem);
   }
 
@@ -313,9 +358,9 @@ function loadImages() {
   introFakerImage.src = '/imgs/intro-fade-in-faker.png';
   introFakerImage.onload = () => {
     console.log('안녕하세요');
-    setTimeout(() => {
-      fadeInFakerImage();
-    }, 2000);
+    // setTimeout(() => {
+    //   fadeInFakerImage();
+    // }, 2000);
   };
 
   sceneInfo[0].objs.introImages.push(introFakerImage);
@@ -1093,15 +1138,20 @@ function loop() {
   }
 }
 
-window.addEventListener('load', () => {
-  loadImages();
-  setCanvasImages();
-  document.body.classList.remove('before-load');
+function afterMideaLoad() {
+  setTimeout(() => {
+    fadeInFakerImage();
+  }, 2000);
+
   awardEventEnroll();
   setLayout();
+}
+
+window.addEventListener('load', () => {
   //awardEventEnroll();
   // loadImages();
-
+  loadImages();
+  setCanvasImages();
   window.addEventListener('scroll', (e) => {
     yOffset = window.scrollY;
     scrollLoop();
