@@ -165,9 +165,7 @@ function setCanvasImages() {
   let imageCount = 0;
   let totalImageCount =
     sceneInfo[1].values.videoImageCount +
-    Math.floor(sceneInfo[1].values.liftImageCount / 2) +
-    sceneInfo[3].objs.assetPath.length -
-    1;
+    Math.floor(sceneInfo[1].values.liftImageCount / 2);
   console.log(
     sceneInfo[1].values.videoImageCount,
     Math.floor(sceneInfo[1].values.liftImageCount / 2),
@@ -225,14 +223,14 @@ function setCanvasImages() {
     }
 
     imgElem.src = sceneInfo[3].objs.assetPath[i];
-    imgElem.onload = () => {
-      imageCount++;
-      if (imageCount >= totalImageCount) {
-        isMediaDataLoad = true;
-        document.body.classList.remove('before-load');
-        afterMideaLoad();
-      }
-    };
+    // imgElem.onload = () => {
+    //   imageCount++;
+    //   if (imageCount >= totalImageCount) {
+    //     isMediaDataLoad = true;
+    //     document.body.classList.remove('before-load');
+    //     afterMideaLoad();
+    //   }
+    // };
     sceneInfo[3].objs.assets.push(imgElem);
   }
 
