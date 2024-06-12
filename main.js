@@ -320,7 +320,7 @@ function fadeInFakerImage() {
 
     // 이미지가 완전히 덮여졌을 때
 
-    if (y > objs.canvas.height && x > objs.canvas.width) {
+    if (y >= objs.canvas.height && x >= objs.canvas.width) {
       objs.afterContainer.style.display = 'block';
       objs.afterQuotation.style.animation = 'faker_quotation-after 2s forwards';
     }
@@ -1137,11 +1137,13 @@ function afterMideaLoad() {
   setLayout();
 }
 
+loadImages();
+setCanvasImages();
+
 window.addEventListener('load', () => {
   //awardEventEnroll();
   // loadImages();
-  loadImages();
-  setCanvasImages();
+
   awardEventEnroll();
 
   window.addEventListener('scroll', (e) => {
