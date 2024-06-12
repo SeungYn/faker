@@ -217,12 +217,6 @@ function setCanvasImages() {
       // 비디오의 모든 정보 이벤트 크기, 시속시간 등
       imgElem.onloadedmetadata = () => {
         ahriVideoReadyStatus = true;
-        imageCount++;
-        if (imageCount >= totalImageCount) {
-          isMediaDataLoad = true;
-          document.body.classList.remove('before-load');
-          afterMideaLoad();
-        }
       };
 
       imgElem.loop = true;
@@ -1003,8 +997,6 @@ function awardEventEnroll() {
 
       // 클릭되면 변화된 길이만큼 동적으로 높이를 조정해줌
       if (!item.classList.contains('active')) {
-        console.log(123);
-        console.log(sceneInfo[2].objs.scrollHeight);
         if (window.offsetWidth < 1024) {
           sceneInfo[2].objs.container.style.height = `${
             sceneInfo[2].scrollHeight + 400
@@ -1140,11 +1132,10 @@ function loop() {
 }
 
 function afterMideaLoad() {
+  console.log('미디어 데이터 로드');
   setTimeout(() => {
     fadeInFakerImage();
   }, 2000);
-
-  awardEventEnroll();
   setLayout();
 }
 
@@ -1153,6 +1144,8 @@ window.addEventListener('load', () => {
   // loadImages();
   loadImages();
   setCanvasImages();
+  awardEventEnroll();
+
   window.addEventListener('scroll', (e) => {
     yOffset = window.scrollY;
     scrollLoop();
