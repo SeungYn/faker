@@ -141,7 +141,7 @@ body.before-load {
 .intro_section > h2 {
   color: white;
   font-style: italic;
-  font-size: 5rem;
+  font-size: 4rem;
   margin-bottom: 6rem;
   animation: faker_quotation 2s;
   word-break: keep-all;
@@ -534,14 +534,16 @@ body#show-scene-3 #fourth_section .sticky-elem {
   }
 }
 
+@media screen and (min-width: 500px) {
+  .intro_section > img {
+    width: 400px;
+    aspect-ratio: 1 / 1.4;
+  }
+}
+
 @media screen and (min-width: 1024px) {
   .common_container {
     padding: 0 2rem;
-  }
-
-  .intro_section > img {
-    width: 600px;
-    aspect-ratio: 1/1.5;
   }
 
   .intro_section-after h2 {
@@ -625,5 +627,12 @@ body#show-scene-3 #fourth_section .sticky-elem {
 
   .award_wrap_list_award_card.active .award_wrap_list_award_card_iframe {
     height: 700px;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .intro_section > img {
+    width: 600px;
+    aspect-ratio: 1/1.5;
   }
 }
