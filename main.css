@@ -541,7 +541,7 @@ body#show-scene-3 #fourth_section .sticky-elem {
 
   .intro_section > img {
     width: 600px;
-    aspect-ratio: 1/2;
+    aspect-ratio: 1/1.5;
   }
 
   .intro_section-after h2 {
