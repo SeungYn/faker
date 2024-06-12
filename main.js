@@ -166,7 +166,8 @@ function setCanvasImages() {
   let totalImageCount =
     sceneInfo[1].values.videoImageCount +
     Math.floor(sceneInfo[1].values.liftImageCount / 2) +
-    sceneInfo[3].objs.assetPath.length;
+    sceneInfo[3].objs.assetPath.length -
+    1;
   console.log(
     sceneInfo[1].values.videoImageCount,
     Math.floor(sceneInfo[1].values.liftImageCount / 2),
