@@ -37,6 +37,7 @@ const sceneInfo = [
     type: 'sticky', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
     heightNum: 6, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
     scrollHeight: 0,
+    finishedLoadingImages: false,
     objs: {
       container: document.querySelector('#second_section'),
       canvas1: document.querySelector('#faker-wakeup-canvas'),
@@ -58,7 +59,7 @@ const sceneInfo = [
     },
     values: {
       videoImageCount: 276,
-      wakeUpImageSequence: [0, 275, { start: 0, end: 0.5 }],
+      wakeUpImageSequence: [0, Math.floor(276 / 2) - 1, { start: 0, end: 0.5 }],
       wakeUpCanvas_opacity: [1, 0, { start: 0.46, end: 0.52 }],
       canvas2_opacity_out: [1, 0, { start: 0.9, end: 0.95 }],
       // 우승컵 들어올리는 프레임이 많아서 반으로 줄임
@@ -123,6 +124,7 @@ const sceneInfo = [
     type: 'sticky', //해당 섹션별 스크롤에 따라 position을 어떻게 해줄것인지에 대한 정보
     heightNum: 6, // 브라우저 높이기반 해당 배수로 scrollHeight 세팅
     scrollHeight: 0,
+    finishedLoadingImages: false,
     objs: {
       container: document.querySelector('#fourth_section'),
       canvasContainer: document.querySelector('#canvas_container'),
@@ -158,28 +160,44 @@ const sceneInfo = [
   },
 ];
 
+function loadingPercent(current, total) {
+  const loadingEl = document.querySelector('.loading-bar span');
+  const loadingRestfileEl = document.querySelector('.loading-restfile');
+
+  if (loadingEl && loadingRestfileEl) {
+    loadingEl.style.width = `${(current / total) * 100}%`;
+    loadingRestfileEl.innerText = `(${current + '/' + total})`;
+  }
+}
+
 /**
  * 캔버스 이미지, 영상 로드
  */
 function setCanvasImages() {
   let imageCount = 0;
   let totalImageCount =
-    sceneInfo[1].values.videoImageCount +
+    Math.floor(sceneInfo[1].values.videoImageCount / 2) +
     Math.floor(sceneInfo[1].values.liftImageCount / 2);
   console.log(
-    sceneInfo[1].values.videoImageCount,
+    Math.floor(sceneInfo[1].values.videoImageCount / 2),
     Math.floor(sceneInfo[1].values.liftImageCount / 2),
     sceneInfo[3].objs.assetPath.length
   );
   for (let i = 1; i <= sceneInfo[1].values.videoImageCount; i++) {
+    if (i % 2 !== 0) continue;
     const imgElem = document.createElement('img');
     imgElem.src = `/videos/faker-wakeup/${i}.jpg`;
     imgElem.onload = () => {
       imageCount++;
 
+      loadingPercent(imageCount, totalImageCount);
       if (imageCount >= totalImageCount) {
         isMediaDataLoad = true;
         document.body.classList.remove('before-load');
+        sceneInfo[1].objs.finishedLoadingImages = true;
+
+        // 4번째씬 이미지들 로드
+        if (!sceneInfo[3].finishedLoadingImages) fourthSceneImagesLoad();
         afterMideaLoad();
       }
     };
@@ -192,15 +210,25 @@ function setCanvasImages() {
     imgElem.src = `/videos/faker-cup/${i}.jpg`;
     imgElem.onload = () => {
       imageCount++;
-
+      loadingPercent(imageCount, totalImageCount);
       if (imageCount >= totalImageCount) {
         isMediaDataLoad = true;
         document.body.classList.remove('before-load');
+        sceneInfo[1].objs.finishedLoadingImages = true;
+
+        // 4번째씬 이미지들 로드
+        if (!sceneInfo[3].finishedLoadingImages) fourthSceneImagesLoad();
         afterMideaLoad();
       }
     };
     sceneInfo[1].objs.liftImages.push(imgElem);
   }
+
+  //console.log(sceneInfo[1].objs.wakeUpImages);
+}
+
+function fourthSceneImagesLoad() {
+  if (sceneInfo[3].finishedLoadingImages) return;
 
   for (let i = 0; i < sceneInfo[3].objs.assetPath.length; i++) {
     let imgElem;
@@ -233,8 +261,6 @@ function setCanvasImages() {
     // };
     sceneInfo[3].objs.assets.push(imgElem);
   }
-
-  //console.log(sceneInfo[1].objs.wakeUpImages);
 }
 
 function setLayout() {
@@ -270,6 +296,22 @@ function setLayout() {
   // 이를 해결하기 위해 5050 정렬을 사용
   sceneInfo[1].objs.canvas1.style.transform = `translate3d(-50%,-50%,0) scaleX(${widthRatio}) scaleY(${heightRatio})`;
   sceneInfo[1].objs.canvas2.style.transform = `translate3d(-50%,-50%,0) scaleX(${widthRatio}) scaleY(${heightRatio})`;
+
+  // 새로고침시 살짝 밑으로 스크롤을 내림
+  let tempYOffset = yOffset;
+  let tempScrollCount = 0;
+
+  if (yOffset > 10 && isMediaDataLoad) {
+    let siId = setInterval(() => {
+      window.scrollTo(0, tempYOffset);
+      tempYOffset += 2;
+      tempScrollCount++;
+
+      if (tempScrollCount > 10) {
+        clearInterval(siId);
+      }
+    }, 20);
+  }
 }
 
 function fadeInFakerImage() {
@@ -1156,35 +1198,8 @@ window.addEventListener('load', () => {
     }
   });
 
-  let tempYOffset = yOffset;
-  let tempScrollCount = 0;
-
-  if (yOffset > 10) {
-    let siId = setInterval(() => {
-      window.scrollTo(0, tempYOffset);
-      tempYOffset += 2;
-      tempScrollCount++;
-
-      if (tempScrollCount > 10) {
-        clearInterval(siId);
-      }
-    }, 20);
-  }
-
-  // 로드 이후 애니메이션이 일어나도록 수정
-  window.addEventListener('scroll', () => {
-    //console.log('scroll');
-    yOffset = window.pageYOffset;
-    scrollLoop();
-
-    if (!rafState) {
-      rafId = requestAnimationFrame(loop);
-      rafState = true;
-    }
-  });
-
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 600) {
+    if (window.innerWidth > 1000) {
       // 사이즈가 바뀔 때 해당값을 변경해주지 않음
       // 기존의 아래 값은 0일때 한번 세팅을 해줌 하지만 resize가 일어나면 값을 바꿔주기 떄문에 설정
       // setLayout();

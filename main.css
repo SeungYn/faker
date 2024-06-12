@@ -32,12 +32,36 @@ body.before-load {
   background-color: rgb(35, 35, 35);
   opacity: 0;
   transition: 0.5s;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 @keyframes loading-spin {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.loading-bar {
+  position: relative;
+  width: 80vw;
+  height: 10px;
+  border: 2px solid white;
+  transition: 0.3s;
+}
+
+.loading-bar span {
+  display: block;
+  position: absolute;
+  background-color: white;
+  height: 100%;
+  width: 0;
+}
+
+.loading-restfile {
+  color: white;
+  font-size: 1rem;
 }
 
 .loading-circle {
