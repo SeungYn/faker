@@ -198,6 +198,7 @@ function setCanvasImages() {
 
         // 4번째씬 이미지들 로드
         if (!sceneInfo[3].finishedLoadingImages) fourthSceneImagesLoad();
+        //alert('비디오 이미지들 로드됨');
         afterMideaLoad();
       }
     };
@@ -218,6 +219,7 @@ function setCanvasImages() {
 
         // 4번째씬 이미지들 로드
         if (!sceneInfo[3].finishedLoadingImages) fourthSceneImagesLoad();
+        //alert('비디오 이미지들 로드됨');
         afterMideaLoad();
       }
     };
@@ -1183,6 +1185,12 @@ loadImages();
 setCanvasImages();
 awardEventEnroll();
 
+document.querySelector('.loading').addEventListener('transitionend', (e) => {
+  // 트랜지션이 끝났을 때 이벤트
+  //alert('트랜지션 이벤트 끝');
+  document.body.removeChild(e.currentTarget);
+});
+
 window.addEventListener('load', () => {
   //awardEventEnroll();
   // loadImages();
@@ -1214,11 +1222,6 @@ window.addEventListener('load', () => {
     setTimeout(() => {
       window.location.reload();
     }, 500);
-  });
-
-  document.querySelector('.loading').addEventListener('transitionend', (e) => {
-    // 트랜지션이 끝났을 때 이벤트
-    document.body.removeChild(e.currentTarget);
   });
 });
 
