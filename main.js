@@ -1181,12 +1181,11 @@ function afterMideaLoad() {
 
 loadImages();
 setCanvasImages();
+awardEventEnroll();
 
 window.addEventListener('load', () => {
   //awardEventEnroll();
   // loadImages();
-
-  awardEventEnroll();
 
   window.addEventListener('scroll', (e) => {
     yOffset = window.scrollY;
